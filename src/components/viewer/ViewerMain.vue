@@ -26,16 +26,19 @@
       :is-canvas-loading="isCanvasLoading"
     ></mobile-buttons>
 
-    <!-- File Not Found Error -->
-    <file-not-found
-      v-if="codesFileNotFounds.length !== 0"
-      class="flex-grow-0 flex-shrink-0 mt-4"
-      :filenames="codesFileNotFounds"
-    ></file-not-found>
+    <!-- Example File Error -->
+    <example-file-error
+      v-for="({ filename, error }, index) of codesFileErrors"
+      :key="filename"
+      class="flex-grow-0 flex-shrink-0 mt-2"
+      :filename="filename"
+      :error="error"
+      @close="codesFileErrors.splice(index, 1)"
+    ></example-file-error>
 
     <div
       ref="viewerContainer"
-      class="example-viewer flex-grow-1 flex-shrink-1 mt-4"
+      class="example-viewer flex-grow-1 flex-shrink-1 mt-2"
       :mobile="mobile"
     >
       <!-- Editor Box -->
@@ -84,12 +87,11 @@ import EditorBox from "@/components/viewer/EditorBox.vue";
 import { AppExampleInstance, AppImportMap, useAppStore } from "@/store/app";
 import { PropType, computed, ref, watch } from "vue";
 import { useDisplay } from "vuetify";
-import DesktopButtons from "./buttons/DesktopButtons.vue";
 import HorizontalResizer from "./HorizontalResizer.vue";
+import DesktopButtons from "./buttons/DesktopButtons.vue";
 import MobileButtons from "./buttons/MobileButtons.vue";
 import { Tab, TabType } from "./editor";
-import FileNotFound from "./error/FileNotFound.vue";
-import { RequestError } from "@/apis";
+import ExampleFileError from "./error/ExampleFileError.vue";
 
 /**
  * Example instance script codes
@@ -118,7 +120,7 @@ const canvasDivide = computed(() =>
 );
 
 const codes = ref<ExampleInstanceScripts | undefined>(undefined);
-const codesFileNotFounds = ref<string[]>([]);
+const codesFileErrors = ref<{ filename: string; error: Error }[]>([]);
 const canvasBox = ref<InstanceType<typeof CanvasBox> | undefined>(undefined);
 const editorBox = ref<InstanceType<typeof EditorBox> | undefined>(undefined);
 const isEditing = computed(() => appStore.isEditing);
@@ -131,10 +133,10 @@ watch(
   async (newInstance) => {
     isCodesLoading.value = true;
     codes.value = undefined;
-    codesFileNotFounds.value = [];
+    codesFileErrors.value = [];
 
     if (newInstance) {
-      const promises: Promise<string | RequestError>[] = [];
+      const promises: Promise<string | Error>[] = [];
       promises.push(getInstanceJavascript(newInstance.fullEntry).catch((err) => err));
       promises.push(
         newInstance.hasHTML
@@ -152,17 +154,17 @@ watch(
       if (newInstance.fullEntry !== props.instance.fullEntry) return;
 
       // filter error
-      if (script instanceof RequestError) {
+      if (script instanceof Error) {
+        codesFileErrors.value.push({ filename: JAVASCRIPT_FILENAME, error: script });
         script = "";
-        codesFileNotFounds.value.push(JAVASCRIPT_FILENAME);
       }
-      if (html instanceof RequestError) {
+      if (html instanceof Error) {
+        codesFileErrors.value.push({ filename: HTML_FILENAME, error: html });
         html = "";
-        codesFileNotFounds.value.push(HTML_FILENAME);
       }
-      if (stylesheet instanceof RequestError) {
+      if (stylesheet instanceof Error) {
+        codesFileErrors.value.push({ filename: STYLESHEET_FILENAME, error: stylesheet });
         stylesheet = "";
-        codesFileNotFounds.value.push(STYLESHEET_FILENAME);
       }
 
       codes.value = {

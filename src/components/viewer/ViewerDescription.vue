@@ -16,25 +16,29 @@
     <!-- Loading -->
     <template v-if="descriptionLoading"></template>
 
+    <!-- Display Error If Description Mark as Existing But Not Found -->
+    <example-file-error
+      v-else-if="descriptionError"
+      filename="index.md"
+      :error="descriptionError"
+      @close="descriptionError = null"
+    ></example-file-error>
+
     <!-- Description -->
     <div v-else-if="description" v-html="description"></div>
 
-    <!-- Display Error If Description Mark as Existing But Not Found -->
-    <file-not-found v-else-if="descriptionNotFound" :filenames="['index.md']"></file-not-found>
-
     <!-- Display Introduction If Has No Description -->
-    <p v-else-if="instance.intro">{{ instance.intro }}</p>
+    <p v-else-if="!instance.hasDescription && instance.intro">{{ instance.intro }}</p>
   </div>
 </template>
 
 <script setup lang="ts">
-import { RequestError } from "@/apis";
 import { getInstanceDescription } from "@/apis/example";
 import { AppExampleInstance } from "@/store/app";
 import DOMPurify from "dompurify";
 import { marked } from "marked";
 import { PropType, ref, watch } from "vue";
-import FileNotFound from "./error/FileNotFound.vue";
+import ExampleFileError from "./error/ExampleFileError.vue";
 
 const props = defineProps({
   instance: {
@@ -45,25 +49,24 @@ const props = defineProps({
 
 const description = ref("");
 const descriptionLoading = ref(false);
-const descriptionNotFound = ref(false);
+const descriptionError = ref<Error | null>(null);
 // Update description when instance changed
 watch(
   () => props.instance,
   async (newInstance) => {
     description.value = "";
     descriptionLoading.value = true;
-    descriptionNotFound.value = false;
+    descriptionError.value = null;
 
     if (newInstance.hasDescription) {
-      let desc: string | RequestError = await getInstanceDescription(newInstance.fullEntry).catch(
+      let desc: string | Error = await getInstanceDescription(newInstance.fullEntry).catch(
         (err) => err
       );
       // Avoids incorrect overriding
       if (newInstance.fullEntry !== props.instance.fullEntry) return;
 
-      if (desc instanceof RequestError) {
-        desc = "";
-        descriptionNotFound.value = true;
+      if (desc instanceof Error) {
+        descriptionError.value = desc;
       } else {
         description.value = DOMPurify.sanitize(marked(desc));
       }
