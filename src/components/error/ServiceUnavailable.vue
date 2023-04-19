@@ -6,23 +6,17 @@
     <v-label class="font-italic mt-2">REASON: {{ reason }}</v-label>
 
     <!-- Example Base URL Editor if Enabled -->
-    <div v-if="enableExampleBaseUrlEditor" class="w-50 d-flex align-center mt-10">
-      <v-text-field
-        variant="outlined"
-        label="Base URL"
-        density="compact"
-        :hide-details="true"
-        v-model="url"
-      ></v-text-field>
-      <v-btn text class="ml-2" @click="reset">reset</v-btn>
-      <v-btn text class="ml-2" @click="save">save</v-btn>
-    </div>
+    <example-base-url-editor
+      v-if="enableExampleBaseUrlEditor"
+      class="editor mt-4"
+      :mobile="mobile"
+    ></example-base-url-editor>
   </div>
 </template>
 
 <script setup lang="ts">
-import { getExampleBaseUrl, resetExampleBaseUrl, setExampleBaseUrl } from "@/apis/example";
-import { ref } from "vue";
+import { useDisplay } from "vuetify";
+import ExampleBaseUrlEditor from "../buttons/ExampleBaseUrlEditor.vue";
 
 defineProps({
   reason: {
@@ -31,16 +25,20 @@ defineProps({
   },
 });
 
-const url = ref(getExampleBaseUrl());
-const reset = () => {
-  resetExampleBaseUrl();
-  url.value = getExampleBaseUrl();
-  window.location.reload();
-};
-const save = () => {
-  setExampleBaseUrl(url.value);
-  url.value = getExampleBaseUrl();
-  window.location.reload();
-};
+const mobile = useDisplay().mobile;
+
 const enableExampleBaseUrlEditor = import.meta.env.VITE_ENABLE_BASE_URL_EDITOR === "true";
 </script>
+
+<style lang="less" scoped>
+.editor {
+  &[mobile="true"] {
+    width: 100%;
+    max-width: 20rem;
+  }
+
+  &[mobile="false"] {
+    width: 40rem;
+  }
+}
+</style>

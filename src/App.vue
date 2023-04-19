@@ -17,7 +17,7 @@
 
       <template v-slot:append>
         <!-- Example Base URL Editor -->
-        <example-base-url-editor v-if="enableExampleBaseUrlEditor"></example-base-url-editor>
+        <example-base-url-button v-if="enableExampleBaseUrlEditor"></example-base-url-button>
         <!-- Dark / Light Theme Switch Button -->
         <theme-switcher></theme-switcher>
       </template>
@@ -32,7 +32,7 @@
         <!-- Dark / Light Theme Switch Button -->
         <theme-switcher></theme-switcher>
         <!-- Example Base URL Editor -->
-        <example-base-url-editor v-if="enableExampleBaseUrlEditor"></example-base-url-editor>
+        <example-base-url-button v-if="enableExampleBaseUrlEditor"></example-base-url-button>
       </template>
     </v-navigation-drawer>
 
@@ -53,7 +53,7 @@
 import { computed, ref } from "vue";
 import { useDisplay, useTheme } from "vuetify";
 import { RequestError } from "./apis";
-import ExampleBaseUrlEditor from "./components/buttons/ExampleBaseUrlEditor.vue";
+import ExampleBaseUrlButton from "./components/buttons/ExampleBaseUrlButton.vue";
 import ThemeSwitcher from "./components/buttons/ThemeSwitcher.vue";
 import ServiceUnavailable from "./components/error/ServiceUnavailable.vue";
 import PreludeLoading from "./components/loading/PreludeLoading.vue";
@@ -99,6 +99,7 @@ appStore
     } else {
       preludeErrorReason.value = "internal error";
     }
+    preludeErrorReason.value = "internal error";
   })
   .finally(() => {
     isPreludeLoading.value = false;

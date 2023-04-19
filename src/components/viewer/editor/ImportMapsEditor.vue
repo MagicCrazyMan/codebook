@@ -65,7 +65,7 @@ import { AppImportMap, AppImportMapType } from "@/store/app";
 import { useField, useForm } from "vee-validate";
 import { PropType, computed, ref } from "vue";
 import type { VForm } from "vuetify/components";
-import { useDisplay } from "vuetify/lib/framework.mjs";
+import { useDisplay } from "vuetify";
 import { Tab, TabType } from ".";
 
 const mobile = useDisplay().mobile;
