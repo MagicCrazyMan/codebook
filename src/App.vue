@@ -112,6 +112,11 @@ html {
   scroll-behavior: smooth;
 }
 
+html,
+body {
+  min-width: 360px;
+}
+
 .app-layout {
   min-height: 100vh;
 
