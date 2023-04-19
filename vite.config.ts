@@ -28,11 +28,5 @@ export default defineConfig({
   },
   server: {
     port: 3000,
-    proxy: {
-      "/examples": {
-        target: "http://localhost:8110",
-        rewrite: (path) => path.replace(/^\/examples/, ""),
-      },
-    },
   },
 });
