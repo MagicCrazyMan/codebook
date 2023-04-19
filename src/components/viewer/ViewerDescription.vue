@@ -67,8 +67,9 @@ watch(
       } else {
         description.value = DOMPurify.sanitize(marked(desc));
       }
-      descriptionLoading.value = false;
     }
+
+    descriptionLoading.value = false;
   },
   { immediate: true }
 );
