@@ -4,8 +4,8 @@
 
   <!-- Error page when prelude error -->
   <service-unavailable
-    v-else-if="preludeErrorReason !== null"
-    :reason="preludeErrorReason"
+    v-else-if="preludeError !== null"
+    :error="preludeError"
   ></service-unavailable>
 
   <v-layout v-else class="app-layout" :mobile="mobile">
@@ -52,7 +52,6 @@
 <script lang="ts" setup>
 import { computed, ref } from "vue";
 import { useDisplay, useTheme } from "vuetify";
-import { RequestError } from "./apis";
 import ExampleBaseUrlButton from "./components/buttons/ExampleBaseUrlButton.vue";
 import ThemeSwitcher from "./components/buttons/ThemeSwitcher.vue";
 import ServiceUnavailable from "./components/error/ServiceUnavailable.vue";
@@ -80,26 +79,12 @@ if (window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").match
 
 // Loads prelude information immediately
 const isPreludeLoading = ref(true);
-const preludeErrorReason = ref<string | null>(null);
+const preludeError = ref<any | null>(null);
 appStore
   .loadPrelude()
   .catch((err) => {
     console.error(err);
-
-    if (err instanceof RequestError) {
-      let reason: string;
-      switch (err.status) {
-        case 404:
-          reason = "failed to load data";
-          break;
-        default:
-          reason = err.message;
-      }
-      preludeErrorReason.value = reason;
-    } else {
-      preludeErrorReason.value = "internal error";
-    }
-    preludeErrorReason.value = "internal error";
+    preludeError.value = err;
   })
   .finally(() => {
     isPreludeLoading.value = false;

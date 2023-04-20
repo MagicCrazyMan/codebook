@@ -17,16 +17,34 @@
 <script setup lang="ts">
 import { useDisplay } from "vuetify";
 import ExampleBaseUrlEditor from "../buttons/ExampleBaseUrlEditor.vue";
+import { PropType } from "vue";
+import { computed } from "vue";
+import { RequestError } from "@/apis";
 
-defineProps({
-  reason: {
+const props = defineProps({
+  error: {
     required: true,
-    type: String,
+    type: Object as PropType<any>,
   },
 });
 
 const mobile = useDisplay().mobile;
 
+const reason = computed(() => {
+  if (props.error instanceof RequestError) {
+    switch (props.error.status) {
+      case 502:
+      case 404:
+        return "data server unavailable";
+      default:
+        return props.error.message;
+    }
+  } else if (props.error instanceof Error) {
+    return "data server unavailable";
+  } else {
+    return props.error.toString();
+  }
+});
 const enableExampleBaseUrlEditor = import.meta.env.VITE_ENABLE_BASE_URL_EDITOR === "true";
 </script>
 
