@@ -5,8 +5,9 @@
       <v-col v-for="instance in instances" :key="instance.fullEntry" :cols="cols">
         <v-card
           link
+          class="h-100"
           :title="instance.title ?? instance.entry"
-          :subtitle="instance.intro"
+          :text="instance.intro"
           @click="toExample(instance.fullEntry)"
         >
           <v-img
@@ -67,10 +68,8 @@ const cols = computed(() => {
     return 12;
   } else if (mdAndDown.value) {
     return 6;
-  } else if (lg.value) {
-    return 3;
   } else {
-    return 2;
+    return 3;
   }
 });
 
