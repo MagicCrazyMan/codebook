@@ -25,7 +25,7 @@
 
     <!-- Navigation Drawer -->
     <v-navigation-drawer v-model="drawer">
-      <navigation-menu :descriptors="descriptors"></navigation-menu>
+      <navigation-menu></navigation-menu>
 
       <!-- Show Dark / Light Theme Switch Button if in Mobile Mode -->
       <template v-if="!mobile" v-slot:append>
@@ -50,7 +50,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, ref } from "vue";
+import { onBeforeUnmount, ref } from "vue";
 import { useDisplay, useTheme } from "vuetify";
 import ExampleBaseUrlButton from "./components/buttons/ExampleBaseUrlButton.vue";
 import ThemeSwitcher from "./components/buttons/ThemeSwitcher.vue";
@@ -58,8 +58,10 @@ import ServiceUnavailable from "./components/error/ServiceUnavailable.vue";
 import PreludeLoading from "./components/loading/PreludeLoading.vue";
 import NavigationMenu from "./components/menu/NavigationMenu.vue";
 import { useAppStore } from "./store/app";
+import { useSSEStore } from "./store/sse";
 
 const appStore = useAppStore();
+const sseStore = useSSEStore();
 const mobile = useDisplay().mobile;
 const theme = useTheme();
 
@@ -78,18 +80,31 @@ if (window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").match
 }
 
 // Loads prelude information immediately
-const isPreludeLoading = ref(true);
+const isPreludeLoading = ref(false);
 const preludeError = ref<any | null>(null);
-appStore
-  .loadPrelude()
-  .catch((err) => {
-    console.error(err);
-    preludeError.value = err;
-  })
-  .finally(() => {
-    isPreludeLoading.value = false;
-  });
-const descriptors = computed(() => appStore.descriptorsTree);
+const loadPrelude = (showLoading = true) => {
+  isPreludeLoading.value = showLoading;
+  preludeError.value = null;
+
+  appStore
+    .loadPrelude()
+    .catch((err) => {
+      console.error(err);
+      preludeError.value = err;
+    })
+    .finally(() => {
+      isPreludeLoading.value = false;
+    });
+};
+loadPrelude();
+
+// Inits SSE
+sseStore.init();
+// Reloads prelude every rebuild
+const sseId = sseStore.onRebuild(() => loadPrelude(false));
+onBeforeUnmount(() => {
+  sseStore.offRebuild(sseId);
+});
 </script>
 
 <style lang="less">

@@ -1,6 +1,11 @@
 import { fetch } from ".";
 
 /**
+ * Server-Side Event request url
+ */
+export const SSE_URL = "/sse";
+
+/**
  * Javascript filename
  */
 export const JAVASCRIPT_FILENAME = "index.js";
@@ -168,4 +173,18 @@ export const getInstanceStylesheet = async (fullEntry: string) => {
  */
 export const getInstanceDescription = async (fullEntry: string) => {
   return getTextFile(concatenateExampleUrl(fullEntry, DESCRIPTION_FILENAME));
+};
+
+/**
+ * Connects to Server-Side Event.
+ *
+ * Promise resolves after event source successfully opened.
+ * @returns Event Source of SSE
+ */
+export const connectServerSideEvent = async () => {
+  const eventSource = new EventSource(concatenateExampleUrl(SSE_URL));
+  await new Promise((resolve) => {
+    eventSource.addEventListener("open", resolve);
+  });
+  return eventSource;
 };

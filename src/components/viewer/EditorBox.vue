@@ -2,6 +2,7 @@
   <div class="h-100 d-flex flex-column">
     <!-- Files Selector -->
     <v-tabs
+      :mandatory="!isCodesLoading"
       show-arrows
       class="editor-box__tabs flex-grow-0 flex-shrink-0"
       density="comfortable"
@@ -212,7 +213,6 @@ watch(
 watch(
   currentSelectedTab,
   (tab) => {
-    console.log(tab);
     emits("tab", tab);
   },
   { immediate: true }

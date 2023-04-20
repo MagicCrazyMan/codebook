@@ -9,10 +9,12 @@
 <script setup lang="ts">
 import GuidelineItem from "@/components/guideline/GuidelineItem.vue";
 import { useAppStore } from "@/store/app";
+import { computed } from "vue";
 import { onMounted } from "vue";
 
 const appStore = useAppStore();
-const tree = appStore.descriptorsTree;
+
+const tree = computed(() => appStore.descriptorsTree);
 
 const scrollToHash = () => {
   const hash = location.hash;

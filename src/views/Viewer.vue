@@ -32,19 +32,22 @@ import { ref, watch } from "vue";
 const appStore = useAppStore();
 
 const instance = ref<AppExampleInstance | undefined>(undefined);
-// Update instance ans HTML title when route changed
-watch(
-  router.currentRoute,
-  (newRoute) => {
-    const item = appStore.descriptorsMap.get(newRoute.path);
-    if (item?.type === ExampleDescriptorType.Instance) {
-      instance.value = item;
-      document.title = `${item.title} - ${import.meta.env.VITE_TITLE}`;
-    } else {
-      instance.value = undefined;
-      document.title = import.meta.env.VITE_TITLE;
-    }
-  },
-  { immediate: true }
-);
+/**
+ * Finds instance and update HTML title
+ */
+const findInstance = () => {
+  const item = appStore.descriptorsMap.get(router.currentRoute.value.path);
+  if (item?.type === ExampleDescriptorType.Instance) {
+    instance.value = item;
+    document.title = `${item.title} - ${import.meta.env.VITE_TITLE}`;
+  } else {
+    instance.value = undefined;
+    document.title = import.meta.env.VITE_TITLE;
+  }
+};
+findInstance();
+// Update when route changed
+watch(router.currentRoute, findInstance);
+// Update when descriptors changed
+watch(() => appStore.descriptorsMap, findInstance);
 </script>

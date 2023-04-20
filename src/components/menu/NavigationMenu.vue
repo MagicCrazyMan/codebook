@@ -18,18 +18,14 @@
 </template>
 
 <script setup lang="ts">
-import { AppExampleDescriptor } from "@/store/app";
-import { PropType, ref } from "vue";
-import NavigationMenuItem from "./NavigationMenuItem.vue";
 import router, { RouteName } from "@/router";
-import { watch } from "vue";
+import { useAppStore } from "@/store/app";
+import { computed, ref, watch } from "vue";
+import NavigationMenuItem from "./NavigationMenuItem.vue";
 
-defineProps({
-  descriptors: {
-    required: true,
-    type: Array as PropType<AppExampleDescriptor[]>,
-  },
-});
+const appStore = useAppStore();
+
+const descriptors = computed(() => appStore.descriptorsTree);
 
 // Opened list itemsq
 const opened = ref<string[]>([]);
