@@ -62,7 +62,7 @@ const props = defineProps({
   },
 });
 
-const { xs, mdAndDown, lg } = useDisplay();
+const { xs, mdAndDown } = useDisplay();
 const cols = computed(() => {
   if (xs.value) {
     return 12;

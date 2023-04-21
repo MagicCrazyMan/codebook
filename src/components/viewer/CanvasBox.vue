@@ -107,7 +107,7 @@ const appendHTML = (document: Document) => {
   if (!code) return;
 
   const container = document.createElement("div");
-  container.classList.add("canvas-box__canvas");
+  container.classList.add("canvas-box__controls");
   container.innerHTML = code;
   document.body.appendChild(container);
 };
