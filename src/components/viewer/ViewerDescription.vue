@@ -13,6 +13,9 @@
       ></v-progress-circular>
     </div>
 
+    <!-- GitHub Markdown Styles -->
+    <component :is="'style'">{{ dark ? GitHubMarkdownDark : GitHubMarkdownLight }}</component>
+
     <!-- Loading -->
     <template v-if="descriptionLoading"></template>
 
@@ -25,7 +28,7 @@
     ></example-file-error>
 
     <!-- Description -->
-    <div v-else-if="description" v-html="description"></div>
+    <div v-else-if="description" v-html="description" class="markdown-body"></div>
 
     <!-- Display Introduction If Has No Description -->
     <p v-else-if="!instance.hasDescription && instance.intro">{{ instance.intro }}</p>
@@ -36,8 +39,11 @@
 import { getInstanceDescription } from "@/apis/example";
 import { AppExampleInstance } from "@/store/app";
 import DOMPurify from "dompurify";
+import GitHubMarkdownDark from "github-markdown-css/github-markdown-dark.css?raw";
+import GitHubMarkdownLight from "github-markdown-css/github-markdown-light.css?raw";
 import { marked } from "marked";
-import { PropType, ref, watch } from "vue";
+import { PropType, computed, ref, watch } from "vue";
+import { useTheme } from "vuetify/lib/framework.mjs";
 import ExampleFileError from "./error/ExampleFileError.vue";
 
 const props = defineProps({
@@ -46,6 +52,8 @@ const props = defineProps({
     type: Object as PropType<AppExampleInstance>,
   },
 });
+
+const dark = computed(() => useTheme().current.value.dark);
 
 const description = ref("");
 const descriptionLoading = ref(false);
