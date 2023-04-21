@@ -82,6 +82,12 @@ const appendBasicElements = (document: Document) => {
       position: absolute;
       top: 0;
       left: 0;
+
+      pointer-events: none;
+
+      > * {
+        pointer-events: all;
+      }
     }
 `;
   document.body.appendChild(defaultStylesheet);
