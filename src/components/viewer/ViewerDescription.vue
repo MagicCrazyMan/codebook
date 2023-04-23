@@ -41,10 +41,14 @@ import { AppExampleInstance } from "@/store/app";
 import DOMPurify from "dompurify";
 import GitHubMarkdownDark from "github-markdown-css/github-markdown-dark.css?raw";
 import GitHubMarkdownLight from "github-markdown-css/github-markdown-light.css?raw";
+import "katex/dist/katex.min.css";
 import { marked } from "marked";
+import markedKatex from "marked-katex-extension";
 import { PropType, computed, ref, watch } from "vue";
 import { useTheme } from "vuetify/lib/framework.mjs";
 import ExampleFileError from "./error/ExampleFileError.vue";
+
+marked.use(markedKatex());
 
 const props = defineProps({
   instance: {
