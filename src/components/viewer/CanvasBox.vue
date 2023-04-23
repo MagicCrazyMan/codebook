@@ -67,6 +67,12 @@ const appendBasicElements = (document: Document) => {
       background-color: rgb(var(--v-theme-surface))
     }
 
+    body[dark-theme="true"] {
+      .dark-color {
+        color: white;
+      }
+    }
+
     .canvas-box__canvas {
       width: 100%;
       height: 100%;
@@ -88,6 +94,11 @@ const appendBasicElements = (document: Document) => {
 
       > * {
         pointer-events: all;
+      }
+
+      > .control-item {
+        margin: 1rem;
+        width: fit-content;
       }
     }
 `;
