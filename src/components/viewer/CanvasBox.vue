@@ -45,6 +45,7 @@ const setThemeCSSVariables = (document: Document) => {
   const themeColor =
     getComputedStyle(rootContainer.value).getPropertyValue("--v-theme-surface") ?? "0,0,0";
   document.body.style.setProperty("--v-theme-surface", themeColor);
+  document.body.setAttribute("dark-theme", theme.current.value.dark.toString());
 };
 
 const appendBasicElements = (document: Document) => {
