@@ -89,3 +89,9 @@ watch(
   { immediate: true }
 );
 </script>
+
+<style lang="less" scoped>
+.markdown-body {
+  background-color: transparent;
+}
+</style>
