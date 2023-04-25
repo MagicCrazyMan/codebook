@@ -187,6 +187,7 @@ const save = () => {
 const reload = () => {
   if (!canvasBox.value) return;
 
+  if (editorBox.value) editorBox.value.save();
   canvasBox.value.reload();
 };
 const capture = () => {
