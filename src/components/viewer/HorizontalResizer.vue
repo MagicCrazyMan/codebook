@@ -3,6 +3,7 @@
 </template>
 
 <script setup lang="ts">
+import { onMounted } from "vue";
 import { getCurrentInstance } from "vue";
 
 defineProps({
@@ -19,7 +20,10 @@ const emits = defineEmits<{
 const MAX_DIVIDE_PERCENT = 0.7;
 const MIN_DIVIDE_PERCENT = 0.3;
 
-const parentContainer = getCurrentInstance()?.parent?.vnode.el as HTMLElement;
+let parentContainer: HTMLElement | undefined;
+onMounted(() => {
+  parentContainer = getCurrentInstance()?.parent?.vnode.el as HTMLElement;
+});
 const startResize = () => {
   document.body.setAttribute("horizontal-resizing", "true");
   document.addEventListener("mousemove", resizing);
