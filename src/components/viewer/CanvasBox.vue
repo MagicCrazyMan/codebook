@@ -67,10 +67,8 @@ const appendBasicElements = (document: Document) => {
       background-color: rgb(var(--v-theme-surface))
     }
 
-    body[dark-theme="true"] {
-      .dark-color {
-        color: white;
-      }
+    body[dark-theme="true"] .dark-color {
+      color: white;
     }
 
     .canvas-box__canvas {
@@ -91,15 +89,15 @@ const appendBasicElements = (document: Document) => {
       left: 0;
 
       pointer-events: none;
+    }
 
-      > * {
-        pointer-events: all;
-      }
+    .canvas-box__controls > * {
+      pointer-events: all;
+    }
 
-      > .control-item {
-        margin: 1rem;
-        width: fit-content;
-      }
+    .canvas-box__controls > .control-item {
+      margin: 1rem;
+      width: fit-content;
     }
 `;
   document.body.appendChild(defaultStylesheet);

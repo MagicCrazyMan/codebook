@@ -45,7 +45,7 @@ import "katex/dist/katex.min.css";
 import { marked } from "marked";
 import markedKatex from "marked-katex-extension";
 import { PropType, computed, ref, watch } from "vue";
-import { useTheme } from "vuetify/lib/framework.mjs";
+import { useTheme } from "vuetify";
 import ExampleFileError from "./error/ExampleFileError.vue";
 
 marked.use(markedKatex());
