@@ -15,7 +15,7 @@
     </v-container>
 
     <!-- Display Error Page if Instance Not Found  -->
-    <instance-not-found v-else></instance-not-found>
+    <instance-not-found class="h-100" v-else></instance-not-found>
   </div>
 </template>
 
