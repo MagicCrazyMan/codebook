@@ -16,8 +16,8 @@
       </template>
 
       <template v-slot:append>
-        <!-- Example Base URL Editor -->
-        <example-base-url-button v-if="enableExampleBaseUrlEditor"></example-base-url-button>
+        <!-- Chapter Base URL Editor -->
+        <chapter-base-url-button v-if="enableChapterBaseUrlEditor"></chapter-base-url-button>
         <!-- Dark / Light Theme Switch Button -->
         <theme-switcher></theme-switcher>
       </template>
@@ -31,8 +31,8 @@
       <template v-if="!mobile" v-slot:append>
         <!-- Dark / Light Theme Switch Button -->
         <theme-switcher></theme-switcher>
-        <!-- Example Base URL Editor -->
-        <example-base-url-button v-if="enableExampleBaseUrlEditor"></example-base-url-button>
+        <!-- Chapter Base URL Editor -->
+        <chapter-base-url-button v-if="enableChapterBaseUrlEditor"></chapter-base-url-button>
       </template>
     </v-navigation-drawer>
 
@@ -52,7 +52,7 @@
 <script lang="ts" setup>
 import { onBeforeUnmount, ref } from "vue";
 import { useDisplay, useTheme } from "vuetify";
-import ExampleBaseUrlButton from "./components/buttons/ExampleBaseUrlButton.vue";
+import ChapterBaseUrlButton from "./components/buttons/ChapterBaseUrlButton.vue";
 import ThemeSwitcher from "./components/buttons/ThemeSwitcher.vue";
 import ServiceUnavailable from "./components/error/ServiceUnavailable.vue";
 import PreludeLoading from "./components/loading/PreludeLoading.vue";
@@ -65,7 +65,7 @@ const sseStore = useSSEStore();
 const mobile = useDisplay().mobile;
 const theme = useTheme();
 
-const enableExampleBaseUrlEditor = import.meta.env.VITE_ENABLE_BASE_URL_EDITOR === "true";
+const enableChapterBaseUrlEditor = import.meta.env.VITE_ENABLE_BASE_URL_EDITOR === "true";
 const title = import.meta.env.VITE_TITLE;
 
 // Update HTML title

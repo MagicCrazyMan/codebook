@@ -14,21 +14,21 @@
 </template>
 
 <script setup lang="ts">
-import { getExampleBaseUrl, resetExampleBaseUrl, setExampleBaseUrl } from "@/apis/example";
+import { getChapterBaseUrl, resetChapterBaseUrl, setChapterBaseUrl } from "@/apis/chapter";
 import { ref } from "vue";
 import { useDisplay } from "vuetify";
 
 const mobile = useDisplay().mobile;
 
-const url = ref(getExampleBaseUrl());
+const url = ref(getChapterBaseUrl());
 const reset = () => {
-  resetExampleBaseUrl();
-  url.value = getExampleBaseUrl();
+  resetChapterBaseUrl();
+  url.value = getChapterBaseUrl();
   window.location.reload();
 };
 const save = () => {
-  setExampleBaseUrl(url.value);
-  url.value = getExampleBaseUrl();
+  setChapterBaseUrl(url.value);
+  url.value = getChapterBaseUrl();
   window.location.reload();
 };
 </script>

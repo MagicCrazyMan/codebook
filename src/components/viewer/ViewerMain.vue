@@ -26,23 +26,23 @@
       :is-canvas-loading="isCanvasLoading"
     ></mobile-buttons>
 
-    <!-- Example File Error -->
-    <example-file-error
+    <!-- Chapter File Error -->
+    <chapter-file-error
       v-for="({ filename, error }, index) of codesFileErrors"
       :key="filename"
       class="flex-grow-0 flex-shrink-0 mt-2"
       :filename="filename"
       :error="error"
       @close="codesFileErrors.splice(index, 1)"
-    ></example-file-error>
+    ></chapter-file-error>
 
     <div
       ref="viewerContainer"
-      class="example-viewer flex-grow-1 flex-shrink-1 mt-2"
+      class="chapter-viewer flex-grow-1 flex-shrink-1 mt-2"
       :mobile="mobile"
     >
       <!-- Editor Box -->
-      <v-card v-if="isEditing" :style="editorDivide" class="example-viewer__editor-box elevation-4">
+      <v-card v-if="isEditing" :style="editorDivide" class="chapter-viewer__editor-box elevation-4">
         <v-progress-linear v-show="isCodesLoading" indeterminate></v-progress-linear>
         <editor-box
           v-show="!isCodesLoading"
@@ -57,7 +57,7 @@
       <horizontal-resizer v-if="!mobile && isEditing" v-model="divide"></horizontal-resizer>
 
       <!-- Canvas Box -->
-      <v-card :style="canvasDivide" class="example-viewer__canvas-box elevation-4">
+      <v-card :style="canvasDivide" class="chapter-viewer__canvas-box elevation-4">
         <v-progress-linear v-show="isCodesLoading" indeterminate></v-progress-linear>
         <canvas-box
           v-show="!isCodesLoading"
@@ -81,22 +81,22 @@ import {
   getInstanceHTML,
   getInstanceJavascript,
   getInstanceStylesheet,
-} from "@/apis/example";
+} from "@/apis/chapter";
 import CanvasBox from "@/components/viewer/CanvasBox.vue";
 import EditorBox from "@/components/viewer/EditorBox.vue";
-import { AppExampleInstance, AppImportMap, useAppStore } from "@/store/app";
+import { AppChapterInstance, AppImportMap, useAppStore } from "@/store/app";
 import { PropType, computed, ref, watch } from "vue";
 import { useDisplay } from "vuetify";
 import HorizontalResizer from "./HorizontalResizer.vue";
 import DesktopButtons from "./buttons/DesktopButtons.vue";
 import MobileButtons from "./buttons/MobileButtons.vue";
 import { Tab, TabType } from "./editor";
-import ExampleFileError from "./error/ExampleFileError.vue";
+import ChapterFileError from "./error/ChapterFileError.vue";
 
 /**
- * Example instance script codes
+ * Chapter instance script codes
  */
-export type ExampleInstanceScripts = {
+export type ChapterInstanceScripts = {
   script: string;
   html: string;
   stylesheet: string;
@@ -108,7 +108,7 @@ const appStore = useAppStore();
 const props = defineProps({
   instance: {
     required: true,
-    type: Object as PropType<AppExampleInstance>,
+    type: Object as PropType<AppChapterInstance>,
   },
 });
 
@@ -119,7 +119,7 @@ const canvasDivide = computed(() =>
   isEditing.value ? `flex-basis: ${(1 - divide.value) * 100}%` : "flex-basis: 100%"
 );
 
-const codes = ref<ExampleInstanceScripts | undefined>(undefined);
+const codes = ref<ChapterInstanceScripts | undefined>(undefined);
 const codesFileErrors = ref<{ filename: string; error: Error }[]>([]);
 const canvasBox = ref<InstanceType<typeof CanvasBox> | undefined>(undefined);
 const editorBox = ref<InstanceType<typeof EditorBox> | undefined>(undefined);
@@ -203,24 +203,24 @@ const showImportMapDialog = () => {
 </script>
 
 <style lang="less" scoped>
-.example-viewer__editor-box {
+.chapter-viewer__editor-box {
   z-index: 2;
 }
 
-.example-viewer__canvas-box {
+.chapter-viewer__canvas-box {
   z-index: 1;
 }
 
-.example-viewer {
+.chapter-viewer {
   // Constrain code zone and canvas box separately in mobile mode
   &[mobile="true"] {
-    .example-viewer__editor-box,
-    .example-viewer__canvas-box {
+    .chapter-viewer__editor-box,
+    .chapter-viewer__canvas-box {
       min-width: 22.5rem;
       height: 30rem;
     }
 
-    .example-viewer__editor-box {
+    .chapter-viewer__editor-box {
       margin-bottom: 2rem;
     }
   }

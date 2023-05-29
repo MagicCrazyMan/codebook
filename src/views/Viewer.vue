@@ -20,24 +20,24 @@
 </template>
 
 <script setup lang="ts">
-import { ExampleDescriptorType } from "@/apis/example";
+import { ChapterDescriptorType } from "@/apis/chapter";
 import InstanceNotFound from "@/components/error/InstanceNotFound.vue";
 import ViewerDescription from "@/components/viewer/ViewerDescription.vue";
 import ViewerMain from "@/components/viewer/ViewerMain.vue";
 import ViewerNavigator from "@/components/viewer/ViewerNavigator.vue";
 import router from "@/router";
-import { AppExampleInstance, useAppStore } from "@/store/app";
+import { AppChapterInstance, useAppStore } from "@/store/app";
 import { ref, watch } from "vue";
 
 const appStore = useAppStore();
 
-const instance = ref<AppExampleInstance | undefined>(undefined);
+const instance = ref<AppChapterInstance | undefined>(undefined);
 /**
  * Finds instance and update HTML title
  */
 const findInstance = () => {
   const item = appStore.descriptorsMap.get(router.currentRoute.value.path);
-  if (item?.type === ExampleDescriptorType.Instance) {
+  if (item?.type === ChapterDescriptorType.Instance) {
     instance.value = item;
     document.title = `${item.title} - ${import.meta.env.VITE_TITLE}`;
   } else {

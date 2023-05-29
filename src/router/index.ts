@@ -37,10 +37,10 @@ export const toGuideline = () => {
 };
 
 /**
- * Jumps to example viewer page by full entry
+ * Jumps to chapter viewer page by full entry
  * @param fullEntry Full entry
  */
-export const toExample = (fullEntry: string) => {
+export const toChapter = (fullEntry: string) => {
   router.push({
     path: fullEntry,
   });

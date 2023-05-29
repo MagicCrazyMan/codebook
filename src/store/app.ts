@@ -1,37 +1,37 @@
 // Utilities
 import {
-  ExampleDescriptor,
-  ExampleDescriptorType,
-  ExampleDirectory,
-  ExampleInstance,
-  concatenateExampleUrl,
+  ChapterDescriptor,
+  ChapterDescriptorType,
+  ChapterDirectory,
+  ChapterInstance,
+  concatenateChapterUrl,
   getPrelude,
-} from "@/apis/example";
+} from "@/apis/chapter";
 import { defineStore } from "pinia";
 import { ref } from "vue";
 
 /**
- * App example descriptor
+ * App chapter descriptor
  */
-export type AppExampleDescriptor = AppExampleInstance | AppExampleDirectory;
+export type AppChapterDescriptor = AppChapterInstance | AppChapterDirectory;
 
 /**
- * App example instance
+ * App chapter instance
  */
-export type AppExampleInstance = ExampleInstance & {
+export type AppChapterInstance = ChapterInstance & {
   fullEntry: string;
   title: string;
   importMaps: AppImportMap[];
-  parents: AppExampleDirectory[];
+  parents: AppChapterDirectory[];
 };
 
 /**
- * App example directory
+ * App chapter directory
  */
-export type AppExampleDirectory = ExampleDirectory & {
+export type AppChapterDirectory = ChapterDirectory & {
   fullEntry: string;
-  children: AppExampleDescriptor[];
-  parents: AppExampleDirectory[];
+  children: AppChapterDescriptor[];
+  parents: AppChapterDirectory[];
 };
 
 /**
@@ -54,22 +54,22 @@ export type AppImportMap = {
 /**
  * Resolves instance relative imports into ECMAScript module import maps
  * @param thirdImportMaps Third party import maps
- * @param instance App example instance
+ * @param instance App chapter instance
  * @returns Import maps
  */
 const resolveInstanceImportMaps = (
   thirdImportMaps: AppImportMap[],
-  instance: AppExampleInstance
+  instance: AppChapterInstance
 ): AppImportMap[] => {
   const im: AppImportMap[] = [...thirdImportMaps];
   instance.libs.forEach((lib) => {
-    // test example base url whether it is a valid url
+    // test chapter base url whether it is a valid url
     let url: string;
     try {
-      url = new URL(concatenateExampleUrl(instance.fullEntry, lib)).toString();
+      url = new URL(concatenateChapterUrl(instance.fullEntry, lib)).toString();
     } catch {
       // if not, append location origin to it
-      url = new URL(concatenateExampleUrl(instance.fullEntry, lib), location.origin).toString();
+      url = new URL(concatenateChapterUrl(instance.fullEntry, lib), location.origin).toString();
     }
     im.push({
       lib: lib,
@@ -81,19 +81,19 @@ const resolveInstanceImportMaps = (
 };
 
 /**
- * Resolve example descriptor
+ * Resolve chapter descriptor
  * @param thirdImportMaps Third party import maps
  * @param parents Parent descriptors
  * @param descriptor Descriptor object
- * @param exampleMaps Map for collecting example
+ * @param chapterMaps Map for collecting chapter
  */
-const resolveExampleDescriptor = (
+const resolveChapterDescriptor = (
   thirdImportMaps: AppImportMap[],
-  parents: AppExampleDirectory[],
-  descriptor: ExampleDescriptor,
-  exampleMaps: Map<string, AppExampleDescriptor>
+  parents: AppChapterDirectory[],
+  descriptor: ChapterDescriptor,
+  chapterMaps: Map<string, AppChapterDescriptor>
 ) => {
-  const appDescriptor = descriptor as AppExampleDescriptor;
+  const appDescriptor = descriptor as AppChapterDescriptor;
   const fullEntry =
     parents.length > 0
       ? `${parents[parents.length - 1].fullEntry}/${descriptor.entry}`
@@ -102,19 +102,19 @@ const resolveExampleDescriptor = (
   appDescriptor.title = appDescriptor.title ?? appDescriptor.entry;
   appDescriptor.fullEntry = fullEntry;
 
-  exampleMaps.set(fullEntry, appDescriptor);
+  chapterMaps.set(fullEntry, appDescriptor);
 
-  if (descriptor.type === ExampleDescriptorType.Directory) {
+  if (descriptor.type === ChapterDescriptorType.Directory) {
     descriptor.children.forEach((child) => {
-      resolveExampleDescriptor(
+      resolveChapterDescriptor(
         thirdImportMaps,
-        [...parents, appDescriptor as AppExampleDirectory],
+        [...parents, appDescriptor as AppChapterDirectory],
         child,
-        exampleMaps
+        chapterMaps
       );
     });
   } else {
-    const instance = appDescriptor as AppExampleInstance;
+    const instance = appDescriptor as AppChapterInstance;
     instance.importMaps = resolveInstanceImportMaps(thirdImportMaps, instance);
   }
 };
@@ -126,18 +126,18 @@ const resolveExampleDescriptor = (
  * @param tree Raw descriptors tree
  * @returns Descriptors map
  */
-const resolveExamplesTree = (thirdImports: Record<string, string>, tree: ExampleDescriptor[]) => {
+const resolveChaptersTree = (thirdImports: Record<string, string>, tree: ChapterDescriptor[]) => {
   const thirdImportMaps = Object.entries(thirdImports).map(([lib, url]) => ({
     type: AppImportMapType.Third,
     lib,
     url,
   }));
-  const exampleMaps = new Map<string, AppExampleDescriptor>();
+  const chapterMaps = new Map<string, AppChapterDescriptor>();
   tree.forEach((descriptor) => {
-    resolveExampleDescriptor(thirdImportMaps, [], descriptor, exampleMaps);
+    resolveChapterDescriptor(thirdImportMaps, [], descriptor, chapterMaps);
   });
 
-  return { tree: tree as AppExampleDescriptor[], map: exampleMaps };
+  return { tree: tree as AppChapterDescriptor[], map: chapterMaps };
 };
 
 export const useAppStore = defineStore("app", () => {
@@ -146,11 +146,11 @@ export const useAppStore = defineStore("app", () => {
     isEditing.value = editing;
   };
 
-  const descriptorsTree = ref<AppExampleDescriptor[]>([]);
-  const descriptorsMap = ref<Map<string, AppExampleDescriptor>>(new Map());
+  const descriptorsTree = ref<AppChapterDescriptor[]>([]);
+  const descriptorsMap = ref<Map<string, AppChapterDescriptor>>(new Map());
   const loadPrelude = async () => {
     const { descriptors, imports } = await getPrelude();
-    const { tree, map } = resolveExamplesTree(imports, descriptors);
+    const { tree, map } = resolveChaptersTree(imports, descriptors);
     descriptorsTree.value = tree;
     descriptorsMap.value = map;
   };

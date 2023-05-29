@@ -1,5 +1,5 @@
 <template>
-  <div class="example-viewer__divider px-1" @mousedown="startResize"></div>
+  <div class="chapter-viewer__divider px-1" @mousedown="startResize"></div>
 </template>
 
 <script setup lang="ts">
@@ -45,7 +45,7 @@ const stopResizing = () => {
 </script>
 
 <style lang="less" scoped>
-.example-viewer__divider {
+.chapter-viewer__divider {
   cursor: col-resize;
 }
 </style>

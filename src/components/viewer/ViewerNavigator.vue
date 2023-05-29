@@ -7,14 +7,14 @@
 
 <script setup lang="ts">
 import { toGuideline } from "@/router";
-import { AppExampleInstance } from "@/store/app";
+import { AppChapterInstance } from "@/store/app";
 import { PropType } from "vue";
 import { computed } from "vue";
 
 const props = defineProps({
   instance: {
     required: true,
-    type: Object as PropType<AppExampleInstance>,
+    type: Object as PropType<AppChapterInstance>,
   },
 });
 

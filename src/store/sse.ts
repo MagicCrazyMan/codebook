@@ -1,4 +1,4 @@
-import { connectServerSideEvent } from "@/apis/example";
+import { connectServerSideEvent } from "@/apis/chapter";
 import { defineStore } from "pinia";
 import { v4 } from "uuid";
 

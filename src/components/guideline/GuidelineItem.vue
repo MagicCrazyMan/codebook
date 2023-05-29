@@ -8,11 +8,11 @@
           class="h-100"
           :title="instance.title ?? instance.entry"
           :text="instance.intro"
-          @click="toExample(instance.fullEntry)"
+          @click="toChapter(instance.fullEntry)"
         >
           <v-img
             v-if="instance.hasPreviewImage"
-            :src="concatenateExampleUrl(instance.fullEntry, PREVIEW_IMAGE_FILENAME)"
+            :src="concatenateChapterUrl(instance.fullEntry, PREVIEW_IMAGE_FILENAME)"
           ></v-img>
         </v-card>
       </v-col>
@@ -46,19 +46,19 @@
 
 <script setup lang="ts">
 import {
-  ExampleDescriptorType,
+  ChapterDescriptorType,
   PREVIEW_IMAGE_FILENAME,
-  concatenateExampleUrl,
-} from "@/apis/example";
-import { toExample } from "@/router";
-import { AppExampleDescriptor, AppExampleDirectory, AppExampleInstance } from "@/store/app";
+  concatenateChapterUrl,
+} from "@/apis/chapter";
+import { toChapter } from "@/router";
+import { AppChapterDescriptor, AppChapterDirectory, AppChapterInstance } from "@/store/app";
 import { PropType, computed } from "vue";
 import { useDisplay } from "vuetify";
 
 const props = defineProps({
   descriptorsTree: {
     required: true,
-    type: Object as PropType<AppExampleDescriptor[]>,
+    type: Object as PropType<AppChapterDescriptor[]>,
   },
 });
 
@@ -75,18 +75,18 @@ const cols = computed(() => {
 
 const instances = computed(() => {
   return props.descriptorsTree.filter(
-    (descriptor) => descriptor.type === ExampleDescriptorType.Instance
-  ) as AppExampleInstance[];
+    (descriptor) => descriptor.type === ChapterDescriptorType.Instance
+  ) as AppChapterInstance[];
 });
 const dirs = computed(() => {
   return props.descriptorsTree.filter(
-    (descriptor) => descriptor.type === ExampleDescriptorType.Directory
-  ) as AppExampleDirectory[];
+    (descriptor) => descriptor.type === ChapterDescriptorType.Directory
+  ) as AppChapterDirectory[];
 });
 
 // Gets anchor href with id hash
 const getHashHref = (id: string) => `${location.pathname}#${id}`;
-// Goes to example (recording history into browser)
+// Goes to chapter (recording history into browser)
 const toHash = (id: string) => {
   location.hash = id;
 };

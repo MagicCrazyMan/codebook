@@ -67,14 +67,14 @@
 </template>
 
 <script setup lang="ts">
-import { getTextFile } from "@/apis/example";
+import { getTextFile } from "@/apis/chapter";
 import { AppImportMap } from "@/store/app";
 import { css } from "@codemirror/lang-css";
 import { html } from "@codemirror/lang-html";
 import { javascript } from "@codemirror/lang-javascript";
 import { Extension } from "@codemirror/state";
 import { PropType, nextTick, ref, watch } from "vue";
-import { ExampleInstanceScripts } from "./ViewerMain.vue";
+import { ChapterInstanceScripts } from "./ViewerMain.vue";
 import { Tab, TabEditor, TabType } from "./editor";
 import CodeEditor from "./editor/CodeEditor.vue";
 import ImportMapsEditor from "./editor/ImportMapsEditor.vue";
@@ -171,11 +171,11 @@ const props = defineProps({
   },
   codes: {
     required: false,
-    type: Object as PropType<ExampleInstanceScripts>,
+    type: Object as PropType<ChapterInstanceScripts>,
   },
 });
 const emits = defineEmits<{
-  (event: "update:codes", codes: ExampleInstanceScripts): void;
+  (event: "update:codes", codes: ChapterInstanceScripts): void;
   (event: "tab", tab?: Tab<keyof TabType>): void;
 }>();
 

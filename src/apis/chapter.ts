@@ -31,23 +31,23 @@ export const DESCRIPTION_FILENAME = "index.md";
 export const PREVIEW_IMAGE_FILENAME = "index.png";
 
 /**
- * Example descriptor
+ * Chapter descriptor
  */
-export type ExampleDescriptor = ExampleInstance | ExampleDirectory;
+export type ChapterDescriptor = ChapterInstance | ChapterDirectory;
 
 /**
- * Example descriptor type
+ * Chapter descriptor type
  */
-export enum ExampleDescriptorType {
+export enum ChapterDescriptorType {
   Instance = 0,
   Directory = 1,
 }
 
 /**
- * Example instance
+ * Chapter instance
  */
-export type ExampleInstance = {
-  type: ExampleDescriptorType.Instance;
+export type ChapterInstance = {
+  type: ChapterDescriptorType.Instance;
   entry: string;
   libs: string[];
   title?: string;
@@ -59,12 +59,12 @@ export type ExampleInstance = {
 };
 
 /**
- * Example directory
+ * Chapter directory
  */
-export type ExampleDirectory = {
-  type: ExampleDescriptorType.Directory;
+export type ChapterDirectory = {
+  type: ChapterDescriptorType.Directory;
   entry: string;
-  children: ExampleDescriptor[];
+  children: ChapterDescriptor[];
   title?: string;
   intro?: string;
 };
@@ -74,59 +74,59 @@ export type ExampleDirectory = {
  */
 export type Prelude = {
   imports: Record<string, string>;
-  descriptors: ExampleDescriptor[];
+  descriptors: ChapterDescriptor[];
 };
 
-const EXAMPLE_BASE_URL_KEY = "EXAMPLE_BASE_URL";
+const CHAPTER_BASE_URL_KEY = "CHAPTER_BASE_URL";
 
 /**
- * Gets example base url
- * @returns example base url
+ * Gets chapter base url
+ * @returns chapter base url
  */
-export const getExampleBaseUrl = () => {
+export const getChapterBaseUrl = () => {
   if (import.meta.env.VITE_ENABLE_BASE_URL_EDITOR === "true") {
     return (
-      localStorage.getItem(EXAMPLE_BASE_URL_KEY) ??
-      import.meta.env.VITE_EXAMPLE_BASE_URL ??
-      "/examples"
+      localStorage.getItem(CHAPTER_BASE_URL_KEY) ??
+      import.meta.env.VITE_CHAPTER_BASE_URL ??
+      "/chapters"
     );
   } else {
-    return import.meta.env.VITE_EXAMPLE_BASE_URL ?? "/examples";
+    return import.meta.env.VITE_CHAPTER_BASE_URL ?? "/chapters";
   }
 };
 
 /**
- * Sets example base url
- * @param url example base url
+ * Sets chapter base url
+ * @param url chapter base url
  */
-export const setExampleBaseUrl = (url: string) => {
+export const setChapterBaseUrl = (url: string) => {
   if (import.meta.env.VITE_ENABLE_BASE_URL_EDITOR === "true") {
-    localStorage.setItem(EXAMPLE_BASE_URL_KEY, url);
+    localStorage.setItem(CHAPTER_BASE_URL_KEY, url);
   }
 };
 
 /**
- * Resets example base url
+ * Resets chapter base url
  */
-export const resetExampleBaseUrl = () => {
+export const resetChapterBaseUrl = () => {
   if (import.meta.env.VITE_ENABLE_BASE_URL_EDITOR === "true") {
-    localStorage.removeItem(EXAMPLE_BASE_URL_KEY);
+    localStorage.removeItem(CHAPTER_BASE_URL_KEY);
   }
 };
 
 /**
- * Concatenates base example url with path
+ * Concatenates base chapter url with path
  * @param paths paths
  * @returns url
  */
-export const concatenateExampleUrl = (...paths: string[]) => getExampleBaseUrl() + paths.join("/");
+export const concatenateChapterUrl = (...paths: string[]) => getChapterBaseUrl() + paths.join("/");
 
 /**
  * Gets prelude descriptors tree
  * @returns Prelude information
  */
 export const getPrelude = async () =>
-  await fetch(concatenateExampleUrl(PRELUDE_FILE_PATH)).then(
+  await fetch(concatenateChapterUrl(PRELUDE_FILE_PATH)).then(
     (res) => res.json() as Promise<Prelude>
   );
 
@@ -145,7 +145,7 @@ export const getTextFile = async (path: string) => {
  * @returns Javascript file content
  */
 export const getInstanceJavascript = async (fullEntry: string) => {
-  return getTextFile(concatenateExampleUrl(fullEntry, JAVASCRIPT_FILENAME));
+  return getTextFile(concatenateChapterUrl(fullEntry, JAVASCRIPT_FILENAME));
 };
 
 /**
@@ -154,7 +154,7 @@ export const getInstanceJavascript = async (fullEntry: string) => {
  * @returns HTML file content
  */
 export const getInstanceHTML = async (fullEntry: string) => {
-  return getTextFile(concatenateExampleUrl(fullEntry, HTML_FILENAME));
+  return getTextFile(concatenateChapterUrl(fullEntry, HTML_FILENAME));
 };
 
 /**
@@ -163,7 +163,7 @@ export const getInstanceHTML = async (fullEntry: string) => {
  * @returns Stylesheet file content
  */
 export const getInstanceStylesheet = async (fullEntry: string) => {
-  return getTextFile(concatenateExampleUrl(fullEntry, STYLESHEET_FILENAME));
+  return getTextFile(concatenateChapterUrl(fullEntry, STYLESHEET_FILENAME));
 };
 
 /**
@@ -172,7 +172,7 @@ export const getInstanceStylesheet = async (fullEntry: string) => {
  * @returns Description file content
  */
 export const getInstanceDescription = async (fullEntry: string) => {
-  return getTextFile(concatenateExampleUrl(fullEntry, DESCRIPTION_FILENAME));
+  return getTextFile(concatenateChapterUrl(fullEntry, DESCRIPTION_FILENAME));
 };
 
 /**
@@ -182,7 +182,7 @@ export const getInstanceDescription = async (fullEntry: string) => {
  * @returns Event Source of SSE
  */
 export const connectServerSideEvent = async () => {
-  const eventSource = new EventSource(concatenateExampleUrl(SSE_URL));
+  const eventSource = new EventSource(concatenateChapterUrl(SSE_URL));
   await new Promise((resolve) => {
     eventSource.addEventListener("open", resolve);
   });

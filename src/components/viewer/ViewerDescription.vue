@@ -20,12 +20,12 @@
     <template v-if="descriptionLoading"></template>
 
     <!-- Display Error If Description Mark as Existing But Not Found -->
-    <example-file-error
+    <chapter-file-error
       v-else-if="descriptionError"
       filename="index.md"
       :error="descriptionError"
       @close="descriptionError = null"
-    ></example-file-error>
+    ></chapter-file-error>
 
     <!-- Description -->
     <div v-else-if="description" v-html="description" class="markdown-body"></div>
@@ -36,8 +36,8 @@
 </template>
 
 <script setup lang="ts">
-import { getInstanceDescription } from "@/apis/example";
-import { AppExampleInstance } from "@/store/app";
+import { getInstanceDescription } from "@/apis/chapter";
+import { AppChapterInstance } from "@/store/app";
 import DOMPurify from "dompurify";
 import GitHubMarkdownDark from "github-markdown-css/github-markdown-dark.css?raw";
 import GitHubMarkdownLight from "github-markdown-css/github-markdown-light.css?raw";
@@ -46,14 +46,14 @@ import { marked } from "marked";
 import markedKatex from "marked-katex-extension";
 import { PropType, computed, ref, watch } from "vue";
 import { useTheme } from "vuetify";
-import ExampleFileError from "./error/ExampleFileError.vue";
+import ChapterFileError from "./error/ChapterFileError.vue";
 
 marked.use(markedKatex());
 
 const props = defineProps({
   instance: {
     required: true,
-    type: Object as PropType<AppExampleInstance>,
+    type: Object as PropType<AppChapterInstance>,
   },
 });
 

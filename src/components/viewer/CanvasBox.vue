@@ -12,12 +12,12 @@
 import { v4 } from "uuid";
 import { PropType, nextTick, onMounted, ref, watch } from "vue";
 import { useTheme } from "vuetify";
-import { ExampleInstanceScripts } from "./ViewerMain.vue";
+import { ChapterInstanceScripts } from "./ViewerMain.vue";
 
 const props = defineProps({
   codes: {
     required: false,
-    type: Object as PropType<ExampleInstanceScripts>,
+    type: Object as PropType<ChapterInstanceScripts>,
   },
   enablePointerEvents: {
     type: Boolean,
@@ -181,7 +181,7 @@ const reload = async () => {
 };
 
 onMounted(() => {
-  // Watch example, load example into iframe
+  // Watch chapter, load chapter into iframe
   watch(() => props.codes, reload, { immediate: true });
 });
 

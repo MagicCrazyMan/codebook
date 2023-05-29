@@ -5,18 +5,18 @@
     <v-label class="font-italic">please retry later or contact website administrator</v-label>
     <v-label class="font-italic mt-2">REASON: {{ reason }}</v-label>
 
-    <!-- Example Base URL Editor if Enabled -->
-    <example-base-url-editor
-      v-if="enableExampleBaseUrlEditor"
+    <!-- Chapter Base URL Editor if Enabled -->
+    <chapter-base-url-editor
+      v-if="enableChapterBaseUrlEditor"
       class="editor mt-4"
       :mobile="mobile"
-    ></example-base-url-editor>
+    ></chapter-base-url-editor>
   </div>
 </template>
 
 <script setup lang="ts">
 import { useDisplay } from "vuetify";
-import ExampleBaseUrlEditor from "../buttons/ExampleBaseUrlEditor.vue";
+import ChapterBaseUrlEditor from "../buttons/ChapterBaseUrlEditor.vue";
 import { PropType } from "vue";
 import { computed } from "vue";
 import { RequestError } from "@/apis";
@@ -45,7 +45,7 @@ const reason = computed(() => {
     return props.error.toString();
   }
 });
-const enableExampleBaseUrlEditor = import.meta.env.VITE_ENABLE_BASE_URL_EDITOR === "true";
+const enableChapterBaseUrlEditor = import.meta.env.VITE_ENABLE_BASE_URL_EDITOR === "true";
 </script>
 
 <style lang="less" scoped>
