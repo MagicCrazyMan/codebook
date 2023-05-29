@@ -1,12 +1,15 @@
 <template>
-  <v-lazy>
-    <v-container class="pl-8">
+  <div>
+    <v-container v-if="tree.length !== 0" class="pl-8">
       <guideline-item :descriptors-tree="tree"></guideline-item>
     </v-container>
-  </v-lazy>
+
+    <chapters-list-empty class="h-screen" v-else></chapters-list-empty>
+  </div>
 </template>
 
 <script setup lang="ts">
+import ChaptersListEmpty from "@/components/error/ChaptersListEmpty.vue";
 import GuidelineItem from "@/components/guideline/GuidelineItem.vue";
 import { useAppStore } from "@/store/app";
 import { computed } from "vue";
