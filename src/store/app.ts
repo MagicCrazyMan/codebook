@@ -72,8 +72,8 @@ const resolveInstanceImportMaps = (
       url = new URL(concatenateChapterUrl(instance.fullEntry, lib), location.origin).toString();
     }
     im.push({
-      lib: lib,
       type: AppImportMapType.Local,
+      lib,
       url,
     });
   });

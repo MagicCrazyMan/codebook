@@ -119,7 +119,15 @@ export const resetChapterBaseUrl = () => {
  * @param paths paths
  * @returns url
  */
-export const concatenateChapterUrl = (...paths: string[]) => getChapterBaseUrl() + paths.join("/");
+export const concatenateChapterUrl = (...paths: string[]) => {
+  const base = getChapterBaseUrl();
+  const path = paths.join("/");
+  if (base.endsWith("/") && path.startsWith("/")) {
+    return base + path.slice(1);
+  } else {
+    return base + path;
+  }
+};
 
 /**
  * Gets prelude descriptors tree
