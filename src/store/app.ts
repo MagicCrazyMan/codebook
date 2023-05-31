@@ -30,6 +30,7 @@ export type AppChapterInstance = ChapterInstance & {
  */
 export type AppChapterDirectory = ChapterDirectory & {
   fullEntry: string;
+  title: string;
   children: AppChapterDescriptor[];
   parents: AppChapterDirectory[];
 };
