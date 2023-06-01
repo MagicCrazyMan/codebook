@@ -186,17 +186,17 @@ onMounted(() => {
 });
 
 // Switches iframe background-color when theme changed
-// NOTE: doing this because allowtransparency not works after change page
+// NOTE: doing this because allowtransparency not works after changing page
 const theme = useTheme();
 watch(
   theme.current,
   () => {
-    const iframe = iframeContainer.value?.contentWindow?.document;
-    if (!iframe) return;
+    const iframeDocument = iframeContainer.value?.contentWindow?.document;
+    if (!iframeDocument) return;
 
-    // Wait next tick for theme completely updated
+    // Wait for theme completely updated
     nextTick(() => {
-      setThemeCSSVariables(iframe);
+      setThemeCSSVariables(iframeDocument);
     });
   },
   { immediate: true }
