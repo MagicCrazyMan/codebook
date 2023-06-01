@@ -13,6 +13,7 @@ import { v4 } from "uuid";
 import { PropType, nextTick, onMounted, ref, watch } from "vue";
 import { useTheme } from "vuetify";
 import { ChapterInstanceScripts } from "./ViewerMain.vue";
+import { concatenateChapterUrl } from "@/apis/chapter";
 
 const props = defineProps({
   codes: {
@@ -46,6 +47,14 @@ const setThemeCSSVariables = (document: Document) => {
     getComputedStyle(rootContainer.value).getPropertyValue("--v-theme-surface") ?? "0,0,0";
   document.body.style.setProperty("--v-theme-surface", themeColor);
   document.body.setAttribute("dark-theme", theme.current.value.dark.toString());
+};
+
+const wrapIframeFetch = (window: Window) => {
+  const nativeFetch = window.fetch;
+  const wrappedFetch = (input: RequestInfo | URL, init?: RequestInit) => {
+    return nativeFetch(concatenateChapterUrl(input.toString()), init);
+  };
+  window.fetch = wrappedFetch;
 };
 
 const appendBasicElements = (document: Document) => {
@@ -167,6 +176,8 @@ const reload = async () => {
 
   // Avoids incorrect overriding
   if (currentLoadId !== lastLoadId) return;
+
+  wrapIframeFetch(iframeWindow);
 
   const iframeDocument = iframeWindow.document;
   setThemeCSSVariables(iframeDocument);
