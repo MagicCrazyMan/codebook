@@ -5,7 +5,7 @@
     lines="one"
     density="compact"
     variant="text"
-    active-color="primary"
+    color="primary"
     v-model:opened="opened"
     v-model:selected="selected"
   >
