@@ -45,7 +45,7 @@ const reason = computed(() => {
     return props.error.toString();
   }
 });
-const enableChapterBaseUrlEditor = import.meta.env.VITE_ENABLE_BASE_URL_EDITOR === "true";
+const enableChapterBaseUrlEditor = import.meta.env.VITE_ENABLE_CHAPTERS_BASE_URL_EDITOR === "true";
 </script>
 
 <style lang="less" scoped>

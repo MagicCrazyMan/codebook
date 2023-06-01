@@ -84,14 +84,14 @@ const CHAPTER_BASE_URL_KEY = "CHAPTER_BASE_URL";
  * @returns chapter base url
  */
 export const getChapterBaseUrl = () => {
-  if (import.meta.env.VITE_ENABLE_BASE_URL_EDITOR === "true") {
+  if (import.meta.env.VITE_ENABLE_CHAPTERS_BASE_URL_EDITOR === "true") {
     return (
       localStorage.getItem(CHAPTER_BASE_URL_KEY) ??
-      import.meta.env.VITE_CHAPTER_BASE_URL ??
+      import.meta.env.VITE_CHAPTERS_BASE_URL ??
       "/chapters"
     );
   } else {
-    return import.meta.env.VITE_CHAPTER_BASE_URL ?? "/chapters";
+    return import.meta.env.VITE_CHAPTERS_BASE_URL ?? "/chapters";
   }
 };
 
@@ -100,7 +100,7 @@ export const getChapterBaseUrl = () => {
  * @param url chapter base url
  */
 export const setChapterBaseUrl = (url: string) => {
-  if (import.meta.env.VITE_ENABLE_BASE_URL_EDITOR === "true") {
+  if (import.meta.env.VITE_ENABLE_CHAPTERS_BASE_URL_EDITOR === "true") {
     localStorage.setItem(CHAPTER_BASE_URL_KEY, url);
   }
 };
@@ -109,7 +109,7 @@ export const setChapterBaseUrl = (url: string) => {
  * Resets chapter base url
  */
 export const resetChapterBaseUrl = () => {
-  if (import.meta.env.VITE_ENABLE_BASE_URL_EDITOR === "true") {
+  if (import.meta.env.VITE_ENABLE_CHAPTERS_BASE_URL_EDITOR === "true") {
     localStorage.removeItem(CHAPTER_BASE_URL_KEY);
   }
 };

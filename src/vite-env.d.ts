@@ -7,10 +7,22 @@ declare module "*.vue" {
 }
 
 interface ImportMetaEnv {
+  /**
+   * Webpage title
+   */
   readonly VITE_TITLE: string;
-  readonly VITE_ENABLE_BASE_URL_EDITOR: string;
-  readonly VITE_CHAPTER_BASE_URL: string;
-  readonly VITE_ENABLE_SSE: string;
+  /**
+   * Chapter resources base url
+   */
+  readonly VITE_CHAPTERS_BASE_URL: string;
+  /**
+   * Enable chapter base url editor
+   */
+  readonly VITE_ENABLE_CHAPTERS_BASE_URL_EDITOR: string;
+  /**
+   * Enable Server-Side Event connection for live update
+   */
+  readonly VITE_ENABLE_CHAPTERS_SSE_LIVE_UPDATE: string;
 }
 
 interface ImportMeta {

@@ -49,7 +49,7 @@ export const useSSEStore = defineStore("sse", () => {
   const rebuildListeners = new Map<string, RebuildListener>();
   const init = async () => {
     // only connect to sse when enabled
-    if (!sseConnecting && !sse && import.meta.env.VITE_ENABLE_SSE === "true") {
+    if (!sseConnecting && !sse && import.meta.env.VITE_ENABLE_CHAPTERS_SSE_LIVE_UPDATE === "true") {
       sseConnecting = true;
       sse = await connectServerSideEvent();
       sse.addEventListener("message", (e) => {

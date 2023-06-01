@@ -65,7 +65,7 @@ const sseStore = useSSEStore();
 const mobile = useDisplay().mobile;
 const theme = useTheme();
 
-const enableChapterBaseUrlEditor = import.meta.env.VITE_ENABLE_BASE_URL_EDITOR === "true";
+const enableChapterBaseUrlEditor = import.meta.env.VITE_ENABLE_CHAPTERS_BASE_URL_EDITOR === "true";
 const title = import.meta.env.VITE_TITLE;
 
 // Update HTML title
