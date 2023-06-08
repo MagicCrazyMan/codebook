@@ -12,13 +12,13 @@
 import { v4 } from "uuid";
 import { PropType, nextTick, onMounted, ref, watch } from "vue";
 import { useTheme } from "vuetify";
-import { ChapterInstanceScripts } from "./ViewerMain.vue";
+import { ChapterInstanceCodes } from "./ViewerMain.vue";
 import { concatenateChapterUrl } from "@/apis/chapter";
 
 const props = defineProps({
   codes: {
     required: false,
-    type: Object as PropType<ChapterInstanceScripts>,
+    type: Object as PropType<ChapterInstanceCodes>,
   },
   enablePointerEvents: {
     type: Boolean,
@@ -227,7 +227,6 @@ const capture = () => {
   downloader.href = dataUrl;
   downloader.download = `${new Date().toISOString()}.png`;
   downloader.click();
-  URL.revokeObjectURL(dataUrl);
 };
 
 defineExpose({

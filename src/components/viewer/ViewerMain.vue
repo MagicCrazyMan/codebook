@@ -96,7 +96,7 @@ import ChapterFileError from "./error/ChapterFileError.vue";
 /**
  * Chapter instance script codes
  */
-export type ChapterInstanceScripts = {
+export type ChapterInstanceCodes = {
   script: string;
   html: string;
   stylesheet: string;
@@ -119,7 +119,7 @@ const canvasDivide = computed(() =>
   isEditing.value ? `flex-basis: ${(1 - divide.value) * 100}%` : "flex-basis: 100%"
 );
 
-const codes = ref<ChapterInstanceScripts | undefined>(undefined);
+const codes = ref<ChapterInstanceCodes | undefined>(undefined);
 const codesFileErrors = ref<{ filename: string; error: Error }[]>([]);
 const canvasBox = ref<InstanceType<typeof CanvasBox> | undefined>(undefined);
 const editorBox = ref<InstanceType<typeof EditorBox> | undefined>(undefined);

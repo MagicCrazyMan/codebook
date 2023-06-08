@@ -74,7 +74,7 @@ import { html } from "@codemirror/lang-html";
 import { javascript } from "@codemirror/lang-javascript";
 import { Extension } from "@codemirror/state";
 import { PropType, nextTick, ref, watch } from "vue";
-import { ChapterInstanceScripts } from "./ViewerMain.vue";
+import { ChapterInstanceCodes } from "./ViewerMain.vue";
 import { Tab, TabEditor, TabType } from "./editor";
 import CodeEditor from "./editor/CodeEditor.vue";
 import ImportMapsEditor from "./editor/ImportMapsEditor.vue";
@@ -171,11 +171,11 @@ const props = defineProps({
   },
   codes: {
     required: false,
-    type: Object as PropType<ChapterInstanceScripts>,
+    type: Object as PropType<ChapterInstanceCodes>,
   },
 });
 const emits = defineEmits<{
-  (event: "update:codes", codes: ChapterInstanceScripts): void;
+  (event: "update:codes", codes: ChapterInstanceCodes): void;
   (event: "tab", tab?: Tab<keyof TabType>): void;
 }>();
 
