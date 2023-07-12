@@ -2,7 +2,10 @@
  * Common request error with status and status text
  */
 export class RequestError extends Error {
-  constructor(public readonly status: number, public readonly statusText?: string) {
+  constructor(
+    public readonly status: number,
+    public readonly statusText?: string
+  ) {
     super(
       `Request failure with status ${status}` + (statusText ? `, status text ${statusText}` : "")
     );

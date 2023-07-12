@@ -116,10 +116,13 @@ const appendImportsMap = (document: Document) => {
   const importMaps = props.codes?.importMaps;
   if (!importMaps) return;
 
-  const imports = importMaps.reduce((result, { lib, url }) => {
-    result[lib] = url;
-    return result;
-  }, {} as Record<string, string>);
+  const imports = importMaps.reduce(
+    (result, { lib, url }) => {
+      result[lib] = url;
+      return result;
+    },
+    {} as Record<string, string>
+  );
   const importsMap = document.createElement("script");
   importsMap.type = "importmap";
   importsMap.innerHTML = JSON.stringify({ imports });
