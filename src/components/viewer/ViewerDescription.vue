@@ -36,7 +36,7 @@
 </template>
 
 <script setup lang="ts">
-import { getInstanceDescription } from "@/apis/chapter";
+import { concatenateChapterUrl, getInstanceDescription } from "@/apis/chapter";
 import { AppChapterInstance } from "@/store/app";
 import DOMPurify from "dompurify";
 import GitHubMarkdownDark from "github-markdown-css/github-markdown-dark.css?raw";
@@ -80,7 +80,16 @@ watch(
       if (desc instanceof Error) {
         descriptionError.value = desc;
       } else {
-        description.value = DOMPurify.sanitize(marked(desc));
+        description.value = DOMPurify.sanitize(
+          marked(desc, {
+            walkTokens: (token) => {
+              // normalize base url for images
+              if (token.type === "image") {
+                token.href = concatenateChapterUrl(token.href);
+              }
+            },
+          })
+        );
       }
     }
 
