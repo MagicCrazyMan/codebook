@@ -231,7 +231,7 @@ const showImportMapDialog = () => {
     display: flex;
     flex-direction: row;
     min-width: 40rem;
-    min-height: 22.5rem;
+    min-height: 40rem;
   }
 }
 </style>
