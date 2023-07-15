@@ -28,12 +28,7 @@
     ></chapter-file-error>
 
     <!-- Description -->
-    <div
-      v-else-if="description"
-      v-html="description"
-      class="markdown-body"
-      ref="descriptionContainer"
-    ></div>
+    <div v-else-if="description" v-html="description" class="markdown-body"></div>
 
     <!-- Display Introduction If Has No Description -->
     <p v-else-if="!instance.hasDescription && instance.intro">{{ instance.intro }}</p>
@@ -47,9 +42,8 @@ import DOMPurify from "dompurify";
 import GitHubMarkdownDark from "github-markdown-css/github-markdown-dark.css?raw";
 import GitHubMarkdownLight from "github-markdown-css/github-markdown-light.css?raw";
 import "katex/dist/katex.min.css";
-import { Renderer, marked } from "marked";
+import { marked } from "marked";
 import markedKatex from "marked-katex-extension";
-import mermaid from "mermaid";
 import { PropType, computed, ref, watch } from "vue";
 import { useTheme } from "vuetify";
 import ChapterFileError from "./error/ChapterFileError.vue";
@@ -64,17 +58,6 @@ const props = defineProps({
 });
 
 const dark = computed(() => useTheme().current.value.dark);
-
-// Marked renderer
-const markedRenderer = new Renderer();
-const defaultCodeRenderer = markedRenderer.code;
-markedRenderer.code = (code, language, isEscaped) => {
-  if (language === "mermaid") {
-    return '<pre class="mermaid">' + code + "</pre>";
-  } else {
-    return defaultCodeRenderer.call(markedRenderer, code, language, isEscaped);
-  }
-};
 
 const description = ref("");
 const descriptionLoading = ref(false);
@@ -99,7 +82,6 @@ watch(
       } else {
         description.value = DOMPurify.sanitize(
           marked(desc, {
-            renderer: markedRenderer,
             walkTokens: (token) => {
               // normalize base url for images
               if (token.type === "image") {
@@ -115,22 +97,6 @@ watch(
   },
   { immediate: true }
 );
-
-const descriptionContainer = ref<HTMLDivElement | null>(null);
-watch(descriptionContainer, (container) => {
-  if (!container) return;
-
-  container.querySelectorAll(".mermaid").forEach(async (ele, index) => {
-    const { svg, bindFunctions } = await mermaid.render(
-      `mermaid_${index}`,
-      (ele as HTMLPreElement).innerText
-    );
-    ele.outerHTML = svg;
-    if (bindFunctions) {
-      bindFunctions?.(ele);
-    }
-  });
-});
 </script>
 
 <style lang="less" scoped>

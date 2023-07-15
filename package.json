@@ -26,7 +26,6 @@
     "katex": "^0.16.8",
     "marked": "^4.3.0",
     "marked-katex-extension": "^2.1.1",
-    "mermaid": "^10.2.4",
     "pinia": "^2.1.4",
     "roboto-fontface": "^0.10.0",
     "thememirror": "^2.0.1",
