@@ -1,6 +1,7 @@
 <template>
   <v-list
     nav
+    mandatory
     class="navigation-menu"
     lines="one"
     density="compact"
