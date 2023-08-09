@@ -39,15 +39,25 @@ export type ChapterDescriptor = ChapterInstance | ChapterDirectory;
  * Chapter descriptor type
  */
 export enum ChapterDescriptorType {
-  Instance = 0,
-  Directory = 1,
+  /**
+   * Introduction chapter, with code and canvas zone hidden
+   */
+  Intro = "intro",
+  /**
+   * Code example chapter, with code and canvas zone shown
+   */
+  Code = "code",
+  /**
+   * Directory entry
+   */
+  Directory = "dir",
 }
 
 /**
  * Chapter instance
  */
 export type ChapterInstance = {
-  type: ChapterDescriptorType.Instance;
+  type: ChapterDescriptorType.Code | ChapterDescriptorType.Intro;
   entry: string;
   libs: string[];
   title?: string;

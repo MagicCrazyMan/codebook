@@ -114,9 +114,14 @@ const resolveChapterDescriptor = (
         chapterMaps
       );
     });
-  } else {
+  } else if (
+    descriptor.type === ChapterDescriptorType.Code ||
+    descriptor.type === ChapterDescriptorType.Intro
+  ) {
     const instance = appDescriptor as AppChapterInstance;
     instance.importMaps = resolveInstanceImportMaps(thirdImportMaps, instance);
+  } else {
+    console.warn(`unknown descriptor type ${descriptor.type} in entry ${descriptor.entry}`);
   }
 };
 

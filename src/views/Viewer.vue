@@ -11,7 +11,11 @@
       ></viewer-description>
 
       <!-- Main -->
-      <viewer-main class="flex-grow-1 flex-shrink-1 mt-4" :instance="instance"></viewer-main>
+      <viewer-main
+        v-if="instance.type === ChapterDescriptorType.Code"
+        class="flex-grow-1 flex-shrink-1 mt-4"
+        :instance="instance"
+      ></viewer-main>
     </v-container>
 
     <!-- Display Error Page if Instance Not Found  -->
@@ -37,10 +41,10 @@ const instance = ref<AppChapterInstance | undefined>(undefined);
  */
 const findInstance = () => {
   const item = appStore.descriptorsMap.get(router.currentRoute.value.path);
-  if (item?.type === ChapterDescriptorType.Instance) {
+  if (item?.type === ChapterDescriptorType.Code || item?.type === ChapterDescriptorType.Intro) {
     instance.value = item;
     document.title = `${item.title} - ${import.meta.env.VITE_TITLE}`;
-  } else {
+  } else if (item?.type === ChapterDescriptorType.Directory) {
     instance.value = undefined;
     document.title = import.meta.env.VITE_TITLE;
   }

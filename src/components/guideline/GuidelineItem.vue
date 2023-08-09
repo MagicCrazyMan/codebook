@@ -75,12 +75,12 @@ const cols = computed(() => {
 
 const instances = computed(() => {
   return props.descriptorsTree.filter(
-    (descriptor) => descriptor.type === ChapterDescriptorType.Instance
+    ({ type }) => type === ChapterDescriptorType.Intro || type === ChapterDescriptorType.Code
   ) as AppChapterInstance[];
 });
 const dirs = computed(() => {
   return props.descriptorsTree.filter(
-    (descriptor) => descriptor.type === ChapterDescriptorType.Directory
+    ({ type }) => type === ChapterDescriptorType.Directory
   ) as AppChapterDirectory[];
 });
 

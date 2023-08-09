@@ -1,5 +1,10 @@
 <template>
-  <template v-if="descriptor.type === ChapterDescriptorType.Instance">
+  <template
+    v-if="
+      descriptor.type === ChapterDescriptorType.Code ||
+      descriptor.type === ChapterDescriptorType.Intro
+    "
+  >
     <v-list-item
       :title="title"
       :value="descriptor.fullEntry"
