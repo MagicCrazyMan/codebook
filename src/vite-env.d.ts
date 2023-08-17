@@ -28,8 +28,3 @@ interface ImportMetaEnv {
 interface ImportMeta {
   readonly env: ImportMetaEnv;
 }
-
-declare module "marked-katex-extension" {
-  import type { marked } from "marked";
-  export default function (options?: { throwOnError?: boolean }): marked.MarkedExtension;
-}

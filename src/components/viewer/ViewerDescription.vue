@@ -49,6 +49,39 @@ import { useTheme } from "vuetify";
 import ChapterFileError from "./error/ChapterFileError.vue";
 
 marked.use(markedKatex());
+marked.use({
+  hooks: {
+    postprocess: (html) => DOMPurify.sanitize(html),
+  },
+});
+// add class for all block katex elements
+marked.use({
+  hooks: {
+    postprocess: (html) => {
+      const doc = new DOMParser().parseFromString(html, "text/html");
+      const nodes = doc.querySelectorAll<HTMLParagraphElement>("p:has(> .katex:only-of-type)");
+      nodes.forEach((node) => {
+        for (let i = 0; i < node.childNodes.length; i++) {
+          if (node.childNodes[i] instanceof Text) {
+            return;
+          }
+        }
+
+        node.classList.add("block-katex");
+      });
+
+      return doc.body.innerHTML;
+    },
+  },
+});
+marked.options({
+  walkTokens: (token) => {
+    if (token.type === "image") {
+      // normalize base url for images
+      token.href = concatenateChapterUrl(token.href);
+    }
+  },
+});
 
 const props = defineProps({
   instance: {
@@ -80,16 +113,7 @@ watch(
       if (desc instanceof Error) {
         descriptionError.value = desc;
       } else {
-        description.value = DOMPurify.sanitize(
-          marked(desc, {
-            walkTokens: (token) => {
-              // normalize base url for images
-              if (token.type === "image") {
-                token.href = concatenateChapterUrl(token.href);
-              }
-            },
-          })
-        );
+        description.value = marked(desc);
       }
     }
 
@@ -102,5 +126,10 @@ watch(
 <style lang="less" scoped>
 .markdown-body {
   background-color: transparent;
+
+  :deep(.block-katex) {
+    display: flex;
+    justify-content: center;
+  }
 }
 </style>
