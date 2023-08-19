@@ -37,8 +37,6 @@
       </h1>
       <p v-if="dir.intro">{{ dir.intro }}</p>
 
-      <div class="my-2"></div>
-
       <guideline-item :descriptors-tree="dir.children"> </guideline-item>
     </section>
   </template>
