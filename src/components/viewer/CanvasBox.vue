@@ -76,8 +76,12 @@ const appendBasicElements = (document: Document) => {
       background-color: rgb(var(--v-theme-surface))
     }
 
-    body[dark-theme="true"] .dark-color {
+    body[dark-theme="true"] {
       color: white;
+    }
+
+    body[dark-theme="false"] {
+      color: black;
     }
 
     .canvas-box__canvas {
