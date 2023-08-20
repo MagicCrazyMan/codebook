@@ -46,18 +46,31 @@ const setThemeCSSVariables = (document: Document) => {
   const themeColor =
     getComputedStyle(rootContainer.value).getPropertyValue("--v-theme-surface") ?? "0,0,0";
   document.body.style.setProperty("--v-theme-surface", themeColor);
-  document.body.setAttribute("dark-theme", theme.current.value.dark.toString());
+  document.body.classList.add(theme.current.value.dark ? "sl-theme-dark" : "sl-theme-light");
+  document.body.classList.remove(theme.current.value.dark ? "sl-theme-light" : "sl-theme-dark");
+  document.body.setAttribute("dark", theme.current.value.dark.toString());
 };
 
 const wrapIframeFetch = (window: Window) => {
   const nativeFetch = window.fetch;
   const wrappedFetch = (input: RequestInfo | URL, init?: RequestInit) => {
-    return nativeFetch(concatenateChapterUrl(input.toString()), init);
+    const url = input.toString();
+    if (url.startsWith("data:")) {
+      return nativeFetch(url, init);
+    } else {
+      return nativeFetch(concatenateChapterUrl(input.toString()), init);
+    }
   };
   window.fetch = wrappedFetch;
 };
 
 const appendBasicElements = (document: Document) => {
+  // Append shoelace
+  const shoelace = document.createElement("script");
+  shoelace.type = "module";
+  shoelace.src = "https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.7.0/cdn/shoelace.js";
+  document.body.appendChild(shoelace);
+
   // Append canvas
   const canvas = document.createElement("canvas");
   canvas.classList.add("canvas-box__canvas");
@@ -67,6 +80,9 @@ const appendBasicElements = (document: Document) => {
   // Append default stylesheet
   const defaultStylesheet = document.createElement("style");
   defaultStylesheet.innerHTML = `
+    @import url("https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.7.0/cdn/themes/dark.css");
+    @import url("https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.7.0/cdn/themes/light.css");
+
     html, body {
       width: 100vw;
       height: 100vh;
@@ -76,12 +92,8 @@ const appendBasicElements = (document: Document) => {
       background-color: rgb(var(--v-theme-surface))
     }
 
-    body[dark-theme="true"] {
+    body[dark="true"] {
       color: white;
-    }
-
-    body[dark-theme="false"] {
-      color: black;
     }
 
     .canvas-box__canvas {
@@ -93,7 +105,7 @@ const appendBasicElements = (document: Document) => {
       left: 0;
     }
 
-    .canvas-box__controls {
+    .canvas-box__controllers {
       width: 100%;
       height: 100%;
       z-index: 2;
@@ -103,14 +115,45 @@ const appendBasicElements = (document: Document) => {
 
       pointer-events: none;
     }
+    
+    .controllers {
+      width: fit-content;
 
-    .canvas-box__controls > * {
+      margin: 0.5rem;
+      padding: 0.5rem;
+      
+      background-color: rgba(var(--v-theme-surface), 0.8);
+      border-radius: 6px;
+      box-shadow: 1px 1px 4px grey;
       pointer-events: all;
+
+      display: grid;
+      grid-template-columns: max-content auto;
+      align-items: center;
+      row-gap: 0.5rem;
+      column-gap: 1rem;
     }
 
-    .canvas-box__controls > .control-item {
-      margin: 1rem;
-      width: fit-content;
+    .controller {
+      display: flex;
+    }
+
+
+    .controller__title {
+      font-weight: bold;
+    }
+
+    .components {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    .component {
+      display: flex;
+      justify-content: start;
+      align-items: center;
+      column-gap: 0.5rem;
     }
 `;
   document.body.appendChild(defaultStylesheet);
@@ -139,7 +182,7 @@ const appendHTML = (document: Document) => {
   if (!code) return;
 
   const container = document.createElement("div");
-  container.classList.add("canvas-box__controls");
+  container.classList.add("canvas-box__controllers");
   container.innerHTML = code;
   document.body.appendChild(container);
 };
