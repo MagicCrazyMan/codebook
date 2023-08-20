@@ -3,17 +3,18 @@
     <iframe
       class="w-100 h-100 canvas-box__iframe"
       :enable-pointer-events="enablePointerEvents"
+      :srcdoc="srcdoc"
       ref="iframeContainer"
     ></iframe>
   </div>
 </template>
 
 <script setup lang="ts">
-import { v4 } from "uuid";
+import { concatenateChapterUrl } from "@/apis/chapter";
 import { PropType, nextTick, onMounted, ref, watch } from "vue";
 import { useTheme } from "vuetify";
 import { ChapterInstanceCodes } from "./ViewerMain.vue";
-import { concatenateChapterUrl } from "@/apis/chapter";
+import { createIframeDoc } from "./canvasbox";
 
 const props = defineProps({
   codes: {
@@ -36,11 +37,10 @@ const emits = defineEmits<{
   (event: "loaded"): void;
 }>();
 
-let lastLoadId = v4();
 const iframeContainer = ref<HTMLIFrameElement | null>(null);
 const rootContainer = ref<HTMLDivElement | null>(null);
 
-const setThemeCSSVariables = (document: Document) => {
+const setTheme = (document: Document) => {
   if (!rootContainer.value) return;
 
   const themeColor =
@@ -51,9 +51,9 @@ const setThemeCSSVariables = (document: Document) => {
   document.body.setAttribute("dark", theme.current.value.dark.toString());
 };
 
-const wrapIframeFetch = (window: Window) => {
+const interceptFetch = (window: Window) => {
   const nativeFetch = window.fetch;
-  const wrappedFetch = (input: RequestInfo | URL, init?: RequestInit) => {
+  const interceptedFetch = (input: RequestInfo | URL, init?: RequestInit) => {
     const url = input.toString();
     if (url.startsWith("data:")) {
       return nativeFetch(url, init);
@@ -61,186 +61,51 @@ const wrapIframeFetch = (window: Window) => {
       return nativeFetch(concatenateChapterUrl(input.toString()), init);
     }
   };
-  window.fetch = wrappedFetch;
-};
-
-const appendBasicElements = (document: Document) => {
-  // Append shoelace
-  const shoelace = document.createElement("script");
-  shoelace.type = "module";
-  shoelace.src = "https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.7.0/cdn/shoelace.js";
-  document.body.appendChild(shoelace);
-
-  // Append canvas
-  const canvas = document.createElement("canvas");
-  canvas.classList.add("canvas-box__canvas");
-  canvas.id = "canvas";
-  document.body.appendChild(canvas);
-
-  // Append default stylesheet
-  const defaultStylesheet = document.createElement("style");
-  defaultStylesheet.innerHTML = `
-    @import url("https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.7.0/cdn/themes/dark.css");
-    @import url("https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.7.0/cdn/themes/light.css");
-
-    html, body {
-      width: 100vw;
-      height: 100vh;
-      padding: 0;
-      margin: 0;
-      overflow: hidden;
-      background-color: rgb(var(--v-theme-surface))
-    }
-
-    body[dark="true"] {
-      color: white;
-    }
-
-    .canvas-box__canvas {
-      width: 100%;
-      height: 100%;
-      z-index: 1;
-      position: absolute;
-      top: 0;
-      left: 0;
-    }
-
-    .canvas-box__controllers {
-      width: 100%;
-      height: 100%;
-      z-index: 2;
-      position: absolute;
-      top: 0;
-      left: 0;
-
-      pointer-events: none;
-    }
-    
-    .controllers {
-      width: fit-content;
-
-      margin: 0.5rem;
-      padding: 0.5rem;
-      
-      background-color: rgba(var(--v-theme-surface), 0.8);
-      border-radius: 6px;
-      box-shadow: 1px 1px 4px grey;
-      pointer-events: all;
-
-      display: grid;
-      grid-template-columns: max-content auto;
-      align-items: center;
-      row-gap: 0.5rem;
-      column-gap: 1rem;
-    }
-
-    .controller {
-      display: flex;
-    }
-
-
-    .controller__title {
-      font-weight: bold;
-    }
-
-    .components {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.5rem;
-    }
-
-    .component {
-      display: flex;
-      justify-content: start;
-      align-items: center;
-      column-gap: 0.5rem;
-    }
-`;
-  document.body.appendChild(defaultStylesheet);
-};
-
-const appendImportsMap = (document: Document) => {
-  const importMaps = props.codes?.importMaps;
-  if (!importMaps) return;
-
-  const imports = importMaps.reduce(
-    (result, { lib, url }) => {
-      result[lib] = url;
-      return result;
-    },
-    {} as Record<string, string>
-  );
-  const importsMap = document.createElement("script");
-  importsMap.type = "importmap";
-  importsMap.innerHTML = JSON.stringify({ imports });
-  document.body.appendChild(importsMap);
-  document.currentScript?.after(importsMap);
-};
-
-const appendHTML = (document: Document) => {
-  const code = props.codes?.html;
-  if (!code) return;
-
-  const container = document.createElement("div");
-  container.classList.add("canvas-box__controllers");
-  container.innerHTML = code;
-  document.body.appendChild(container);
-};
-
-const appendStylesheet = (document: Document) => {
-  const code = props.codes?.stylesheet;
-  if (!code) return;
-
-  const stylesheet = document.createElement("style");
-  stylesheet.innerHTML = code;
-  document.body.appendChild(stylesheet);
-};
-
-const appendScript = (document: Document) => {
-  const code = props.codes?.script;
-  if (!code) return;
-
-  const script = document.createElement("script");
-  script.type = "module";
-  script.innerHTML = code;
-  document.body.appendChild(script);
+  window.fetch = interceptedFetch;
 };
 
 /**
- * Reload code
+ * Reload iframe
  */
-const reload = async () => {
+const srcdoc = ref("");
+const reload = () => {
   const iframe = iframeContainer.value;
   if (!iframe) return;
-  let iframeWindow = iframe.contentWindow;
-  if (!iframeWindow) return;
+  const root = rootContainer.value;
+  if (!root) return;
 
   emits("loading");
 
-  const currentLoadId = v4();
-  lastLoadId = currentLoadId;
-  await new Promise((resolve) => {
-    iframe.addEventListener("load", resolve, { once: true });
-    if (iframeWindow) iframeWindow.location.reload();
-  });
+  const doc = createIframeDoc(
+    theme.current.value.dark,
+    getComputedStyle(root).getPropertyValue("--v-theme-surface"),
+    props.codes?.importMaps,
+    props.codes?.html,
+    props.codes?.stylesheet,
+    props.codes?.script
+  );
 
-  // Avoids incorrect overriding
-  if (currentLoadId !== lastLoadId) return;
+  if (doc !== srcdoc.value) {
+    srcdoc.value = doc;
+  } else {
+    iframe.contentWindow?.location.reload();
+  }
 
-  wrapIframeFetch(iframeWindow);
+  iframe.addEventListener(
+    "load",
+    () => {
+      const iframeWindow = iframe.contentWindow;
+      const iframeDocument = iframe.contentDocument;
+      if (!iframeWindow || !iframeDocument) return;
 
-  const iframeDocument = iframeWindow.document;
-  setThemeCSSVariables(iframeDocument);
-  appendImportsMap(iframeDocument);
-  appendBasicElements(iframeDocument);
-  appendHTML(iframeDocument);
-  appendStylesheet(iframeDocument);
-  // script must be appended after HTML and stylesheet loaded
-  appendScript(iframeDocument);
+      interceptFetch(iframeWindow);
+      setTheme(iframeDocument);
 
-  emits("loaded");
+      emits("loaded");
+    },
+    { once: true }
+  );
 };
-
 onMounted(() => {
   // Watch chapter, load chapter into iframe
   watch(() => props.codes, reload, { immediate: true });
@@ -252,12 +117,12 @@ const theme = useTheme();
 watch(
   theme.current,
   () => {
-    const iframeDocument = iframeContainer.value?.contentWindow?.document;
-    if (!iframeDocument) return;
-
     // Wait for theme completely updated
     nextTick(() => {
-      setThemeCSSVariables(iframeDocument);
+      const iframeDocument = iframeContainer.value?.contentDocument;
+      if (!iframeDocument) return;
+
+      setTheme(iframeDocument);
     });
   },
   { immediate: true }
@@ -267,7 +132,7 @@ watch(
  * Exports canvas content as image
  */
 const capture = () => {
-  const canvas = iframeContainer.value?.contentWindow?.document?.getElementById(
+  const canvas = iframeContainer.value?.contentDocument?.getElementById(
     "canvas"
   ) as HTMLCanvasElement;
   if (!canvas) return;
