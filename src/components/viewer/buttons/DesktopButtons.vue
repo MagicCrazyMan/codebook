@@ -19,14 +19,6 @@
         @click="showImportMapDialog"
       >
       </v-btn>
-      <!-- Save Button -->
-      <v-btn
-        v-if="isEditing"
-        icon="mdi-content-save"
-        :loading="isCanvasLoading || isCodesLoading"
-        @click="save"
-      >
-      </v-btn>
       <!-- Reload Button -->
       <v-btn
         v-if="isEditing"
@@ -49,10 +41,6 @@ defineProps({
   selectedTab: {
     required: false,
     type: Object as PropType<Tab<keyof TabType>>,
-  },
-  save: {
-    required: true,
-    type: Function as PropType<() => void>,
   },
   reload: {
     required: true,

@@ -21,15 +21,6 @@
           @click="reload"
         >
         </transition-icon-button>
-        <!-- Save Button -->
-        <transition-icon-button
-          class="mt-2"
-          icon="mdi-content-save"
-          :visible="!isCollapsed && isEditing"
-          :loading="isCanvasLoading || isCodesLoading"
-          @click="save"
-        >
-        </transition-icon-button>
         <!-- Edit Button -->
         <transition-icon-button
           class="mt-2"
@@ -70,10 +61,6 @@ defineProps({
   selectedTab: {
     required: false,
     type: Object as PropType<Tab<keyof TabType>>,
-  },
-  save: {
-    required: true,
-    type: Function as PropType<() => void>,
   },
   reload: {
     required: true,

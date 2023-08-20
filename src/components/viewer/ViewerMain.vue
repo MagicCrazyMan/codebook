@@ -5,7 +5,6 @@
       v-if="!mobile"
       class="flex-grow-0 flex-shrink-0"
       :selected-tab="currentSelectTab"
-      :save="save"
       :reload="reload"
       :capture="capture"
       :show-import-map-dialog="showImportMapDialog"
@@ -17,7 +16,6 @@
     <mobile-buttons
       v-else
       :selected-tab="currentSelectTab"
-      :save="save"
       :reload="reload"
       :capture="capture"
       :show-import-map-dialog="showImportMapDialog"
@@ -179,16 +177,8 @@ watch(
   { immediate: true }
 );
 
-const save = () => {
-  if (!editorBox.value) return;
-
-  editorBox.value.save();
-};
 const reload = () => {
-  if (!canvasBox.value) return;
-
   if (editorBox.value) editorBox.value.save();
-  canvasBox.value.reload();
 };
 const capture = () => {
   if (!canvasBox.value) return;
