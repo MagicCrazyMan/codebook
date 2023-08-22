@@ -4,6 +4,29 @@
   <head>
     <meta charset="UTF-8" />
     <script type="module" src="https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.7.0/cdn/shoelace.js"></script>
+    <!-- Script Intercept Fetch Function -->
+    <script>
+      const concatenateChapterUrl = (...paths) => {
+        const base = window.CHAPTERS_BASE_URL;
+        const path = paths.join("/");
+        if (base.endsWith("/") && path.startsWith("/")) {
+          return base + path.slice(1);
+        } else {
+          return base + path;
+        }
+      };
+
+      const nativeFetch = window.fetch;
+      const interceptedFetch = (input, init) => {
+        const url = input.toString();
+        if (url.startsWith("data:")) {
+          return nativeFetch(url, init);
+        } else {
+          return nativeFetch(concatenateChapterUrl(input.toString()), init);
+        }
+      };
+      window.fetch = interceptedFetch;
+    </script>
     <style>
       @import url("https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.7.0/cdn/themes/dark.css");
       @import url("https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.7.0/cdn/themes/light.css");
@@ -38,7 +61,7 @@
         height: 100%;
         z-index: 2;
         position: absolute;
-        
+
         pointer-events: none;
       }
 
@@ -85,6 +108,7 @@
         align-items: center;
         column-gap: 0.5rem;
       }
+
     </style>
   </head>
 

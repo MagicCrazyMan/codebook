@@ -10,7 +10,6 @@
 </template>
 
 <script setup lang="ts">
-import { concatenateChapterUrl } from "@/apis/chapter";
 import { PropType, nextTick, onMounted, ref, watch } from "vue";
 import { useTheme } from "vuetify";
 import { ChapterInstanceCodes } from "./ViewerMain.vue";
@@ -51,19 +50,6 @@ const setTheme = (document: Document) => {
   document.body.setAttribute("dark", theme.current.value.dark.toString());
 };
 
-const interceptFetch = (window: Window) => {
-  const nativeFetch = window.fetch;
-  const interceptedFetch = (input: RequestInfo | URL, init?: RequestInit) => {
-    const url = input.toString();
-    if (url.startsWith("data:")) {
-      return nativeFetch(url, init);
-    } else {
-      return nativeFetch(concatenateChapterUrl(input.toString()), init);
-    }
-  };
-  window.fetch = interceptedFetch;
-};
-
 /**
  * Reload iframe
  */
@@ -98,7 +84,6 @@ const reload = () => {
       const iframeDocument = iframe.contentDocument;
       if (!iframeWindow || !iframeDocument) return;
 
-      interceptFetch(iframeWindow);
       setTheme(iframeDocument);
 
       emits("loaded");

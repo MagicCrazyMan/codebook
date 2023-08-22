@@ -1,5 +1,6 @@
 import { AppImportMap } from "@/store/app";
 import srcdoc from "./CanvasBox.html?raw";
+import { getChapterBaseUrl } from "@/apis/chapter";
 
 const parser = new DOMParser();
 
@@ -23,6 +24,7 @@ export const createIframeDoc = (
   const document = parser.parseFromString(srcdoc, "text/html");
 
   setTheme(document, dark, surfaceTheme);
+  appendChapterBaseUrl(document);
   appendImportsMap(document, importMaps);
   appendHTML(document, htmlCode);
   appendStylesheet(document, stylesheetCode);
@@ -53,6 +55,12 @@ const appendImportsMap = (document: Document, importMaps?: AppImportMap[]) => {
   importsMap.type = "importmap";
   importsMap.innerHTML = JSON.stringify({ imports });
   document.head.insertBefore(importsMap, document.head.firstChild);
+};
+
+const appendChapterBaseUrl = (document: Document) => {
+  const chapterBaseUrlScript = document.createElement("script");
+  chapterBaseUrlScript.innerHTML = `window.CHAPTERS_BASE_URL = "${getChapterBaseUrl()}";`;
+  document.head.appendChild(chapterBaseUrlScript);
 };
 
 const appendHTML = (document: Document, code?: string) => {
